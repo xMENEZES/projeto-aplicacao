@@ -1,0 +1,34 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\repositorios-originais\\scrapy\\scrapy\\spidermiddlewares\\depth.py",
+  "total_sites_no_arquivo": 4,
+  "mutantes_gerados": 4,
+  "mortos": 3,
+  "vivos": 1,
+  "escore_mutacao_pct": 75.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 116: AOR Add -> Sub",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 119: AOR Mult -> Div",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 2,
+      "description": "linha 120: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 120: ROR Gt -> GtE",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

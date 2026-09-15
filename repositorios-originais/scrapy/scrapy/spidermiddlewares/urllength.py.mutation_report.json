@@ -1,0 +1,88 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\repositorios-originais\\scrapy\\scrapy\\spidermiddlewares\\urllength.py",
+  "total_sites_no_arquivo": 13,
+  "mutantes_gerados": 13,
+  "mortos": 9,
+  "vivos": 4,
+  "escore_mutacao_pct": 69.2,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 44: ROR LtE -> Gt",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 23: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 27: SDL remove AnnAssign -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 3,
+      "description": "linha 30: SDL remove AnnAssign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 4,
+      "description": "linha 34: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 5,
+      "description": "linha 37: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 6,
+      "description": "linha 38: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 7,
+      "description": "linha 39: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 8,
+      "description": "linha 46: SDL remove Expr -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 9,
+      "description": "linha 51: SDL remove Expr -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 10,
+      "description": "linha 52: SDL remove Return -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 11,
+      "description": "linha 36: SDL remove Raise -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 12,
+      "description": "linha 45: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

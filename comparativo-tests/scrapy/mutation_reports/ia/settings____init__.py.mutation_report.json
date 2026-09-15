@@ -1,0 +1,160 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\repositorios-originais\\scrapy\\scrapy\\settings\\__init__.py",
+  "total_sites_no_arquivo": 25,
+  "mutantes_gerados": 25,
+  "mortos": 4,
+  "vivos": 21,
+  "escore_mutacao_pct": 16.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 71: ROR GtE -> Eq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 128: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 2,
+      "description": "linha 142: ROR NotEq -> Lt",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 3,
+      "description": "linha 142: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 4,
+      "description": "linha 154: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 5,
+      "description": "linha 154: ROR Eq -> NotEq",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 6,
+      "description": "linha 155: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 7,
+      "description": "linha 155: ROR NotEq -> Lt",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 8,
+      "description": "linha 163: ROR Eq -> NotEq",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 9,
+      "description": "linha 242: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 10,
+      "description": "linha 267: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 11,
+      "description": "linha 336: AOR Add -> Sub",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 12,
+      "description": "linha 381: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 13,
+      "description": "linha 381: AOR Add -> Sub",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 14,
+      "description": "linha 382: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 15,
+      "description": "linha 407: ROR Gt -> GtE",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 16,
+      "description": "linha 439: ROR NotEq -> Lt",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 17,
+      "description": "linha 450: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 18,
+      "description": "linha 503: ROR Eq -> NotEq",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 19,
+      "description": "linha 506: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 20,
+      "description": "linha 533: ROR Eq -> NotEq",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 21,
+      "description": "linha 536: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 22,
+      "description": "linha 609: ROR GtE -> Eq",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 23,
+      "description": "linha 736: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 24,
+      "description": "linha 736: ROR NotEq -> Lt",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

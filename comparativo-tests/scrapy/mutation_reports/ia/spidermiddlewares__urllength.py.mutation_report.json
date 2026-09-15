@@ -1,0 +1,16 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\repositorios-originais\\scrapy\\scrapy\\spidermiddlewares\\urllength.py",
+  "total_sites_no_arquivo": 1,
+  "mutantes_gerados": 1,
+  "mortos": 1,
+  "vivos": 0,
+  "escore_mutacao_pct": 100.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 44: ROR LtE -> Gt",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

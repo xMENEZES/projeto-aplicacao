@@ -6,12 +6,17 @@ nativamente no Windows (pede WSL). Usa somente a biblioteca padrao do Python
 Operadores implementados (os mesmos documentados na skill gerador-de-testes,
 em references/teste-mutacao.md):
   ROR - Relational Operator Replacement (<  <=  >  >=  ==  !=)
+  IOR - Identity Operator Replacement (is / is not)
+  MOR - Membership Operator Replacement (in / not in)
   AOR - Arithmetic Operator Replacement (+  -  *  /  //  %)
   COR - Conditional Operator Replacement (and / or)
+  SDL - Statement Deletion (troca um comando simples -- Expr, Assign, Return,
+        Delete, Raise, Assert, Break, Continue -- por `pass`; docstrings sao
+        ignoradas, pois removê-las nunca muda o comportamento em runtime)
 
-Nao implementado nesta versao leve: SDL (Statement Deletion) e os operadores
-especificos de OO (AMC/IOD/PCI) -- os 3 acima ja cobrem a maior parte dos
-defeitos tipicos e sao suficientes para comparar a "força" de duas suites.
+Nao implementado nesta versao leve: os operadores especificos de OO
+(AMC/IOD/PCI) -- os acima ja cobrem a maior parte dos defeitos tipicos e sao
+suficientes para comparar a "força" de duas suites.
 
 Uso:
     py mutation_test.py <arquivo_fonte.py> --test-cmd "<comando de teste>" [--cwd <dir>] [--max-mutants N] [--timeout N]
@@ -38,7 +43,21 @@ import time
 from pathlib import Path
 
 REL_CYCLE = [ast.Lt, ast.LtE, ast.Gt, ast.GtE, ast.Eq, ast.NotEq]
+IDENTITY_CYCLE = [ast.Is, ast.IsNot]
+MEMBERSHIP_CYCLE = [ast.In, ast.NotIn]
 ARITH_CYCLE = [ast.Add, ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod]
+
+# SDL: tipos de comando simples elegiveis para "remover" (substituir por pass).
+# De proposito NAO inclui comandos compostos (If/For/While/FunctionDef/...) --
+# SDL classico mira comandos atomicos, nao blocos inteiros.
+SDL_ELIGIBLE = (ast.Expr, ast.Assign, ast.AugAssign, ast.AnnAssign, ast.Return,
+                ast.Delete, ast.Raise, ast.Assert, ast.Break, ast.Continue)
+STMT_LIST_FIELDS = ("body", "orelse", "finalbody")
+
+
+def _is_docstring_expr(stmt) -> bool:
+    return (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant)
+            and isinstance(stmt.value.value, str))
 
 
 def _op_name(op_type):
@@ -57,6 +76,16 @@ class SiteCollector(ast.NodeVisitor):
                 idx = REL_CYCLE.index(type(op))
                 new_type = REL_CYCLE[(idx + 1) % len(REL_CYCLE)]
                 self.sites.append(("ROR", node.lineno,
+                                    f"linha {node.lineno}: {_op_name(type(op))} -> {_op_name(new_type)}"))
+            elif type(op) in IDENTITY_CYCLE:
+                idx = IDENTITY_CYCLE.index(type(op))
+                new_type = IDENTITY_CYCLE[(idx + 1) % len(IDENTITY_CYCLE)]
+                self.sites.append(("IOR", node.lineno,
+                                    f"linha {node.lineno}: {_op_name(type(op))} -> {_op_name(new_type)}"))
+            elif type(op) in MEMBERSHIP_CYCLE:
+                idx = MEMBERSHIP_CYCLE.index(type(op))
+                new_type = MEMBERSHIP_CYCLE[(idx + 1) % len(MEMBERSHIP_CYCLE)]
+                self.sites.append(("MOR", node.lineno,
                                     f"linha {node.lineno}: {_op_name(type(op))} -> {_op_name(new_type)}"))
         self.generic_visit(node)
 
@@ -102,6 +131,20 @@ class MutationApplier(ast.NodeTransformer):
                     self.description = f"linha {node.lineno}: ROR {_op_name(type(op))} -> {_op_name(new_type)}"
                     node.ops[i] = new_type()
                     self.applied = True
+            elif type(op) in IDENTITY_CYCLE:
+                if self._is_target():
+                    idx = IDENTITY_CYCLE.index(type(op))
+                    new_type = IDENTITY_CYCLE[(idx + 1) % len(IDENTITY_CYCLE)]
+                    self.description = f"linha {node.lineno}: IOR {_op_name(type(op))} -> {_op_name(new_type)}"
+                    node.ops[i] = new_type()
+                    self.applied = True
+            elif type(op) in MEMBERSHIP_CYCLE:
+                if self._is_target():
+                    idx = MEMBERSHIP_CYCLE.index(type(op))
+                    new_type = MEMBERSHIP_CYCLE[(idx + 1) % len(MEMBERSHIP_CYCLE)]
+                    self.description = f"linha {node.lineno}: MOR {_op_name(type(op))} -> {_op_name(new_type)}"
+                    node.ops[i] = new_type()
+                    self.applied = True
         self.generic_visit(node)
         return node
 
@@ -141,6 +184,65 @@ def make_mutant_source(source: str, target_index: int):
         return None, None
     ast.fix_missing_locations(new_tree)
     return ast.unparse(new_tree), applier.description
+
+
+def collect_sdl_sites(source: str):
+    """Localiza comandos simples elegiveis para SDL, identificados por
+    (lineno, col_offset, tipo) -- posicao exata no codigo-fonte, garantida
+    identica entre duas chamadas de ast.parse() sobre o MESMO texto. Isso evita
+    o problema de contador dessincronizado que ja mordeu ROR/AOR/COR uma vez:
+    aqui nao ha necessidade de duas passadas com ordens que precisam bater,
+    so uma posicao que ou existe de novo apos o re-parse, ou nao existe."""
+    tree = ast.parse(source)
+    sites = []
+    for node in ast.walk(tree):
+        for field in STMT_LIST_FIELDS:
+            stmts = getattr(node, field, None)
+            if isinstance(stmts, list):
+                for stmt in stmts:
+                    if isinstance(stmt, SDL_ELIGIBLE) and not _is_docstring_expr(stmt):
+                        sites.append((stmt.lineno, stmt.col_offset, type(stmt).__name__))
+    return sites
+
+
+def make_sdl_mutant_source(source: str, sdl_index: int):
+    sites = collect_sdl_sites(source)
+    if sdl_index >= len(sites):
+        return None, None
+    target_lineno, target_col, target_type = sites[sdl_index]
+    tree = ast.parse(source)
+    state = {"done": False}
+
+    class SDLApplier(ast.NodeTransformer):
+        def generic_visit(self, node):
+            for field in STMT_LIST_FIELDS:
+                stmts = getattr(node, field, None)
+                if isinstance(stmts, list):
+                    for i, stmt in enumerate(stmts):
+                        if (not state["done"] and stmt.lineno == target_lineno
+                                and stmt.col_offset == target_col
+                                and type(stmt).__name__ == target_type):
+                            new_pass = ast.Pass()
+                            ast.copy_location(new_pass, stmt)
+                            stmts[i] = new_pass
+                            state["done"] = True
+            return super().generic_visit(node)
+
+    new_tree = SDLApplier().visit(tree)
+    if not state["done"]:
+        return None, None
+    ast.fix_missing_locations(new_tree)
+    description = f"linha {target_lineno}: SDL remove {target_type} -> pass"
+    return ast.unparse(new_tree), description
+
+
+def make_mutant_source_unified(source: str, idx: int, n_expr_sites: int):
+    """Despacha para o mecanismo certo: indices < n_expr_sites sao ROR/IOR/MOR/
+    AOR/COR (mecanismo de contador, MutationApplier); indices >= n_expr_sites
+    sao SDL (mecanismo de posicao, make_sdl_mutant_source)."""
+    if idx < n_expr_sites:
+        return make_mutant_source(source, idx)
+    return make_sdl_mutant_source(source, idx - n_expr_sites)
 
 
 def run_tests(test_cmd: str, cwd: str, timeout: int, extra_env: dict) -> tuple[bool, str]:
@@ -194,12 +296,33 @@ def main():
     backup_path = source_path.with_suffix(source_path.suffix + ".mutation_backup")
     shutil.copy2(source_path, backup_path)
 
-    sites = collect_sites(original)
-    total_sites = len(sites)
+    expr_sites = collect_sites(original)
+    sdl_sites = collect_sdl_sites(original)
+    n_expr_sites = len(expr_sites)
+    total_sites = n_expr_sites + len(sdl_sites)
     if total_sites == 0:
-        print(f"Nenhum ponto mutavel (ROR/AOR/COR) encontrado em {source_path}.")
+        print(f"Nenhum ponto mutavel (ROR/IOR/MOR/AOR/COR/SDL) encontrado em {source_path}.")
         backup_path.unlink(missing_ok=True)
         return
+
+    # Teste de sanidade: roda o --test-cmd UMA VEZ, sem nenhuma mutacao, antes
+    # de comecar. Se ja falhar aqui, tratar cada mutante como "morto" depois
+    # seria um falso positivo generalizado (ja aconteceu 2x: path com barra
+    # normal na frente do comando nao resolve como executavel via shell=True
+    # no Windows -- cmd.exe so aceita contra-barra nesse caso especifico).
+    print("Rodando o comando de teste uma vez, sem mutacao, para validar o ambiente...")
+    baseline_ok, baseline_reason = run_tests(args.test_cmd, args.cwd, args.timeout, extra_env)
+    if not baseline_ok:
+        backup_path.unlink(missing_ok=True)
+        print(f"\nERRO: o --test-cmd falhou MESMO SEM MUTACAO NENHUMA ({baseline_reason}).")
+        print("Isso normalmente significa que o comando em si esta quebrado (caminho errado, "
+              "executavel nao encontrado, barra normal em vez de contra-barra antes do .exe "
+              "quando roda via shell=True no Windows, etc.) -- NAO que os testes detectariam "
+              "qualquer mutacao. Rodando com mutantes nesse estado, cada um apareceria como "
+              "'morto' por engano (o comando falha sempre, nao por causa da mutacao). "
+              "Corrija o --test-cmd e rode de novo.")
+        sys.exit(1)
+    print("Ambiente OK, comando de teste passa sem mutacao. Iniciando os mutantes...\n")
 
     if total_sites > args.max_mutants:
         step = total_sites / args.max_mutants
@@ -220,7 +343,7 @@ def main():
     results = []
     try:
         for n, idx in enumerate(indices, 1):
-            mutant_source, description = make_mutant_source(original, idx)
+            mutant_source, description = make_mutant_source_unified(original, idx, n_expr_sites)
             if mutant_source is None:
                 continue
             source_path.write_text(mutant_source, encoding="utf-8")

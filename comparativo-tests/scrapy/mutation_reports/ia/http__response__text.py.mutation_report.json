@@ -1,0 +1,34 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\repositorios-originais\\scrapy\\scrapy\\http\\response\\text.py",
+  "total_sites_no_arquivo": 4,
+  "mutantes_gerados": 4,
+  "mortos": 4,
+  "vivos": 0,
+  "escore_mutacao_pct": 100.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 76: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 80: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 122: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 284: ROR NotEq -> Lt",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

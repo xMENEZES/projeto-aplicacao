@@ -1,0 +1,28 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\scrapy\\human_original\\scrapy\\downloadermiddlewares\\offsite.py",
+  "total_sites_no_arquivo": 3,
+  "mutantes_gerados": 3,
+  "mortos": 3,
+  "vivos": 0,
+  "escore_mutacao_pct": 100.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 49: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 55: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 69: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

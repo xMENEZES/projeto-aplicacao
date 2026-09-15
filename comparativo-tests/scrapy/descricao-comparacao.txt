@@ -1,0 +1,107 @@
+COMPARAÇÃO DE TESTES — SCRAPY (testes escritos por IA vs. testes humanos originais)
+=====================================================================================
+
+O QUE FOI COMPARADO
+--------------------
+Quatorze arquivos do código-fonte do Scrapy (versão 2.17.0), escolhidos porque a
+suíte de testes escrita por IA e a suíte de testes humana original do projeto
+testam as mesmas classes neles:
+
+1. scrapy/crawler.py                              -> classe CrawlerRunner
+2. scrapy/downloadermiddlewares/httpauth.py        -> classe HttpAuthMiddleware
+3. scrapy/downloadermiddlewares/offsite.py         -> classe OffsiteMiddleware
+4. scrapy/downloadermiddlewares/redirect.py        -> classe RedirectMiddleware
+5. scrapy/downloadermiddlewares/retry.py           -> classe RetryMiddleware
+6. scrapy/http/request/__init__.py                 -> classe Request
+7. scrapy/http/response/__init__.py                -> classe Response
+8. scrapy/http/response/text.py                    -> classes TextResponse, HtmlResponse
+9. scrapy/item.py                                  -> classes Item, Field
+10. scrapy/settings/__init__.py                    -> classes BaseSettings, Settings
+11. scrapy/signalmanager.py                        -> classe SignalManager
+12. scrapy/spidermiddlewares/depth.py               -> classe DepthMiddleware
+13. scrapy/spidermiddlewares/urllength.py           -> classe UrlLengthMiddleware
+14. scrapy/spiders/__init__.py                      -> classe Spider
+
+
+COMO OS TESTES FORAM GERADOS
+------------------------------
+- A suíte de IA foi escrita olhando SOMENTE o código de produção do Scrapy
+  (nunca leu os testes humanos), usando as técnicas de teste de software
+  (classes de equivalência, valor limite, tabela de decisão, cobertura
+  estrutural) da skill "gerador-de-testes".
+- A suíte humana é a suíte de testes que já vem no próprio repositório do
+  Scrapy no GitHub (pasta tests/), escrita pelos mantenedores do projeto.
+- As duas suítes rodam contra o MESMO código-fonte (mesma versão, 2.17.0) —
+  uma cópia local para a suíte de IA, um clone separado do repositório oficial
+  para a suíte humana.
+- Particularidade do Scrapy: usa o framework assíncrono Twisted para rodar
+  crawls de verdade. A suíte de IA sobe um servidor HTTP local (só HTML, não
+  precisa de internet) para os testes de integração/aceitação rastrearem
+  páginas reais; a suíte humana usa a mesma infraestrutura de testes que o
+  próprio Scrapy já mantém para isso.
+
+COMO A COBERTURA FOI MEDIDA
+------------------------------
+Ferramenta: pytest + coverage.py (via plugin pytest-cov).
+Comando (mesma ideia dos dois lados, só troca a suíte de teste):
+
+    pytest <arquivos de teste> --cov=scrapy --cov-branch --cov-report=html
+
+Isso gera um relatório HTML (pastas cov_ia/ e cov_humano/ nesta mesma pasta)
+mostrando, por arquivo, duas métricas:
+  - cobertura de LINHA: quantas linhas do arquivo foram executadas por algum teste.
+  - cobertura de BRANCH (desvio): de cada "if/else", quantos dos dois caminhos
+    possíveis foram realmente exercitados.
+Branch é a métrica mais importante das duas — ver descrição completa no
+documento equivalente do Celery, o raciocínio é o mesmo.
+
+COMO A MUTAÇÃO FOI MEDIDA
+----------------------------
+Mesmo processo do Celery: um script próprio (mutation_test.py, biblioteca
+padrão do Python, sem depender do mutmut que não roda no Windows) troca um
+operador de cada vez no código de produção (relacional, aritmético ou lógico)
+e roda a suíte de testes. Se algum teste falhar, o "mutante" morreu (bom sinal
+— os testes perceberam a mudança); se todos passarem mesmo com o código
+alterado, o mutante sobreviveu (sinal de que aquele trecho não é bem testado).
+
+ATUALIZAÇÃO: dois arquivos (response/__init__.py e signalmanager.py) não têm
+nenhum ponto elegível para os operadores relacional/aritmético/lógico usados
+originalmente (ROR/AOR/COR) — o código deles é feito de isinstance(), checagens
+"is None"/"is not None" e chamadas de repasse, sem comparação relacional, conta
+ou and/or em lugar nenhum. Por isso o script foi ampliado com mais dois
+operadores: IOR (troca is <-> is not) e SDL (substitui um comando simples --
+Assign, Return, Raise, Expr etc. -- por "pass", para ver se a suíte percebe a
+ausência). Com isso os dois arquivos passaram a ter escore de mutação real,
+incluído na tabela abaixo.
+
+RESULTADO FINAL
+-----------------
+                                      Cobertura Linha    Cobertura Branch    Escore de Mutação
+Arquivo                              IA      Humano      IA      Humano      IA        Humano
+crawler.py (CrawlerRunner)           45%     71%         20%     54%         8,3%      30,0%
+httpauth.py (HttpAuthMiddleware)     85%     100%        71%     100%        62,5%     62,5%
+offsite.py (OffsiteMiddleware)       98%     100%        83%     100%        80,0%     100,0%
+redirect.py (RedirectMiddleware)     81%     92%         60%     81%         58,6%     75,0%
+retry.py (RetryMiddleware)           91%     99%         69%     96%         80,0%     100,0%
+request/__init__.py (Request)        87%     91%         74%     74%         75,0%     62,5%
+response/__init__.py (Response)      91%     98%         83%     92%         70,0%     75,0%
+response/text.py (TextResponse)      90%     97%         70%     92%         100,0%    100,0%
+item.py (Item/Field)                 93%     100%        95%     100%        100,0%    100,0%
+settings/__init__.py (Settings)      71%     100%        58%     100%        16,0%     75,0%
+signalmanager.py (SignalManager)     82%     76%         100%    100%        47,4%     47,4%
+depth.py (DepthMiddleware)           96%     92%         75%     71%         75,0%     100,0%
+urllength.py (UrlLengthMiddleware)   100%    100%        100%    100%        100,0%    100,0%
+spiders/__init__.py (Spider)         83%     93%         70%     80%         100,0%    100,0%
+
+CONCLUSÃO
+-----------
+Com os 14 arquivos completos, a suíte humana venceu o escore de mutação em 7
+(crawler.py, offsite.py, redirect.py, retry.py, settings/__init__.py,
+depth.py, response/__init__.py), empatou em 6 (httpauth.py, response/text.py,
+item.py, urllength.py, spiders/__init__.py, signalmanager.py) e a IA venceu em
+apenas 1 (request/__init__.py, 75% vs. 62,5%). O padrão observado no Celery se
+repete aqui: mesmo quando a IA cobre mais linhas de código (ex.: crawler.py,
+settings/__init__.py), a suíte humana mata proporcionalmente mais mutantes —
+ou seja, testa com mais intenção cada decisão do código, em vez de só "passar
+pela linha".
+

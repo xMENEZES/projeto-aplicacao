@@ -203,14 +203,75 @@ Todos os 7 arquivos, cobertura + mutação, os dois lados. Duas coincidências f
 
 **Status: Celery CONCLUÍDO.** Próximo repositório a comparar: a decidir com o usuário (Scrapy é o mais indicado por não ter nenhum ajuste pendente).
 
-### 7.2 Requests, Scrapy, Conan, Dask
-Pendente — mesma metodologia da seção 5 será aplicada depois que Celery estiver concluído. Requests e Conan precisam primeiro dos ajustes da Etapa 2 antes de medir; Scrapy já está pronto (sem gaps); Dask só precisa remover `toposort` do escopo comparado.
+### 7.2 Scrapy (15/09/2026)
+
+**Reorganização de pastas (mesmo dia, outra sessão em paralelo — ver nota da seção 2):** a suíte de IA agora mora em `testes-ia\scrapy\`, o código-fonte original em `repositorios-originais\scrapy\`, e o clone humano permanente em `scrapy\human_original\` (mesmo padrão do Celery, criado pela outra sessão). `conftest.py` da IA já veio ajustado para o novo caminho.
+
+**Ambiente:** venv próprio em `testes-ia\scrapy\.venv` (deps de `requirements-testes.txt` + `defusedxml`, que faltava no arquivo) e outro em `scrapy\human_original\.venv` (`pip install -e .` + deps de teste do `tox.ini`: attrs, coverage, httpx, pexpect, pyftpdlib, pygments, pytest, pytest-cov, pytest-xdist, sybil, testfixtures, pytest-twisted).
+
+**14 arquivos-alvo** (Scrapy não teve nenhum gap — todos com par humano confirmado):
+
+| Arquivo | Classe(s) | Cobertura Linha (IA/Hum) | Cobertura Branch (IA/Hum) | Cobertura Total (IA/Hum) |
+|---|---|---|---|---|
+| `crawler.py` | CrawlerRunner | 45% / 71% | 20% / 54% | 39% / 67% |
+| `downloadermiddlewares/httpauth.py` | HttpAuthMiddleware | 85% / 100% | 71% / 100% | 82% / 100% |
+| `downloadermiddlewares/offsite.py` | OffsiteMiddleware | 98% / 100% | 83% / 100% | 96% / 100% |
+| `downloadermiddlewares/redirect.py` | RedirectMiddleware | 81% / 92% | 60% / 81% | 76% / 89% |
+| `downloadermiddlewares/retry.py` | RetryMiddleware | 91% / 99% | 69% / 96% | 85% / 98% |
+| `http/request/__init__.py` | Request | 87% / 91% | 74% / 74% | 84% / 87% |
+| `http/response/__init__.py` | Response | 91% / 98% | 83% / 92% | 90% / 97% |
+| `http/response/text.py` | TextResponse/HtmlResponse | 90% / 97% | 70% / 92% | 85% / 96% |
+| `item.py` | Item/Field | 93% / 100% | 95% / 100% | 93% / 100% |
+| `settings/__init__.py` | BaseSettings/Settings | 71% / 100% | 58% / 100% | 67% / 100% |
+| `signalmanager.py` | SignalManager | 82% / 76% | 100% / 100% | 82% / 76% |
+| `spidermiddlewares/depth.py` | DepthMiddleware | 96% / 92% | 75% / 71% | 91% / 88% |
+| `spidermiddlewares/urllength.py` | UrlLengthMiddleware | 100% / 100% | 100% / 100% | 100% / 100% |
+| `spiders/__init__.py` | Spider | 83% / 93% | 70% / 80% | 81% / 91% |
+
+**Observação preliminar:** ao contrário do Celery, aqui a IA às vezes vence (signalmanager.py, depth.py) — o padrão "humano sempre ganha" não é universal, precisa confirmar com mutação.
+
+**Mutação — 3 incidentes durante a execução, todos resolvidos:**
+
+1. **Mesmo bug de barra normal de novo** (agora nos scripts de lote `run_mutation_ia.sh`/`run_mutation_humano.sh`, variável `PY=".venv/Scripts/python.exe"`) — gerou uma primeira rodada inteira com **100% de escore em todos os arquivos, dos dois lados**, que parecia bom demais pra ser verdade e era: o comando nunca chegava a rodar (cmd.exe não resolve o executável com barra normal), então TODO mutante "morria" por o comando falhar sempre, não por causa da mutação. Descartados os `.mutation_report.json` dessa rodada e refeito com contra-barra.
+2. **`--disable-pytest-plugin-autoload` quebrou os testes de crawl real** (`crawler.py`/`spiders/__init__.py`) — essa flag também desliga o `pytest-twisted` (autocarregado do mesmo jeito), que o Scrapy precisa para rodar as funções `async def` dos testes de integração/aceitação. Diferente do Celery, aqui os venvs da IA e do humano são **separados** desde o início, então essa flag nunca foi necessária — removida do script da IA.
+3. **Notificação de conclusão falsa do harness** para o lote do lado humano: recebi "completed" enquanto o processo (confirmado via `Get-CimInstance Win32_Process`) ainda rodava de verdade, several arquivos adiante do ponto onde o log parecia ter parado. Ao intervir achando que tinha travado, apaguei por engano o `.mutation_backup` que o processo ainda usava, causando um `FileNotFoundError` no `shutil.copy2` de restauração final só para `request/__init__.py` (lado humano) — o conteúdo do arquivo em si não foi perdido (o restore por-mutante já tinha devolvido o original antes disso), só a rodada daquele arquivo específico crashou e teve que ser refeita isolada no final. Lição: **verificar processos reais via `Get-CimInstance`/`Get-Process` antes de agir sobre uma notificação de conclusão de uma tarefa em segundo plano com cadeia de subprocessos profunda (bash → py → python → subprocess shell=True → cmd.exe)**, não confiar cegamente nela.
+
+**Resultado final consolidado — Scrapy (15/09/2026):**
+
+| Arquivo | Classe | Linha (IA/Hum) | Branch (IA/Hum) | Mutação (IA/Hum) |
+|---|---|---|---|---|
+| `crawler.py` | CrawlerRunner | 45% / 71% | 20% / 54% | 8,3% / 30,0% |
+| `downloadermiddlewares/httpauth.py` | HttpAuthMiddleware | 85% / 100% | 71% / 100% | 62,5% / 62,5% |
+| `downloadermiddlewares/offsite.py` | OffsiteMiddleware | 98% / 100% | 83% / 100% | 80,0% / 100,0% |
+| `downloadermiddlewares/redirect.py` | RedirectMiddleware | 81% / 92% | 60% / 81% | 58,6% / 75,0% |
+| `downloadermiddlewares/retry.py` | RetryMiddleware | 91% / 99% | 69% / 96% | 80,0% / 100,0% |
+| `http/request/__init__.py` | Request | 87% / 91% | 74% / 74% | 75,0% / 62,5% |
+| `http/response/__init__.py` | Response | 91% / 98% | 83% / 92% | 70,0% / 75,0% |
+| `http/response/text.py` | TextResponse/HtmlResponse | 90% / 97% | 70% / 92% | 100,0% / 100,0% |
+| `item.py` | Item/Field | 93% / 100% | 95% / 100% | 100,0% / 100,0% |
+| `settings/__init__.py` | BaseSettings/Settings | 71% / 100% | 58% / 100% | 16,0% / 75,0% |
+| `signalmanager.py` | SignalManager | 82% / 76% | 100% / 100% | 47,4% / 47,4% |
+| `spidermiddlewares/depth.py` | DepthMiddleware | 96% / 92% | 75% / 71% | 75,0% / 100,0% |
+| `spidermiddlewares/urllength.py` | UrlLengthMiddleware | 100% / 100% | 100% / 100% | 100,0% / 100,0% |
+| `spiders/__init__.py` | Spider | 83% / 93% | 70% / 80% | 100,0% / 100,0% |
+
+**Conclusão do Scrapy:** dos 14 arquivos, a suíte humana venceu em **7** (`crawler.py`, `offsite.py`, `redirect.py`, `retry.py`, `settings/__init__.py`, `depth.py`, `response/__init__.py`), empatou em **6** (`httpauth.py`, `response/text.py`, `item.py`, `urllength.py`, `spiders/__init__.py`, `signalmanager.py`) e a IA venceu em **apenas 1** (`request/__init__.py`, 75% vs. 62,5%). Mesmo padrão do Celery se repete: a suíte humana testa com mais intenção as decisões do código, mesmo quando a IA cobre mais linhas (ex.: `crawler.py` e `settings/__init__.py`, onde a diferença de escore de mutação é grande apesar da cobertura de linha não ser tão díspar).
+
+### Ampliação do `mutation_test.py` (15/09/2026, a pedido do usuário)
+
+`response/__init__.py` e `signalmanager.py` inicialmente ficaram sem escore de mutação porque o código deles não usa nenhum operador relacional/aritmético/lógico — só `isinstance()`, checagens `is None`/`is not None` e chamadas de repasse. Adicionados dois operadores novos ao script, mantendo o mecanismo antigo (ROR/AOR/COR, por contador) intocado e testado sem regressão antes de aceitar dados novos:
+- **IOR** (Identity Operator Replacement): troca `is` ↔ `is not`, reaproveitando o mesmo `visit_Compare` já usado por ROR (mesma ordem de contagem, sem risco de dessincronizar).
+- **SDL** (Statement Deletion): substitui um comando simples (`Assign`, `Return`, `Raise`, `Expr`, `Delete`, `Assert`, `Break`, `Continue` — docstrings excluídas de propósito) por `pass`. Implementado com um mecanismo **independente** do contador antigo: localiza cada comando por posição exata no código-fonte (linha + coluna + tipo), que é garantidamente idêntica entre duas chamadas de `ast.parse()` sobre o mesmo texto — evita por construção o tipo de bug de ordem de travessia que já mordeu o ROR/AOR/COR uma vez.
+
+Com isso: `response/__init__.py` foi de "sem pontos mutáveis" para 70,0% (IA) / 75,0% (humano); `signalmanager.py` foi de "sem pontos mutáveis" para 47,4% / 47,4% (empate exato, ambos os lados testam essa classe pequena com o mesmo nível — modesto — de rigor).
+
+**Status: Scrapy CONCLUÍDO (14/14 arquivos com escore de mutação).**
 
 ## 8. Próximos passos
 
-- [ ] Usuário executa o passo a passo do Celery (seção 7.1) e captura os 8 prints.
-- [ ] Consolidar os números do Celery na tabela final.
-- [ ] Repetir para Scrapy (sem ajuste necessário).
-- [ ] Aplicar os ajustes da Etapa 2 em Requests e Conan, depois medir.
-- [ ] Remover `toposort` do escopo do Dask, depois medir.
+- [x] Celery concluído (cobertura + mutação, tabela final na seção 7.1).
+- [x] Scrapy concluído (cobertura + mutação, tabela final na seção 7.2).
+- [ ] Aplicar os ajustes da Etapa 2 em Requests e Conan, depois medir (clones humanos já prontos em `requests\human_original\` e `conan\human_original\`, sem venv ainda).
+- [ ] Remover `toposort` do escopo do Dask, depois medir (clone humano já pronto em `dask\human_original\`, sem venv ainda).
+- [ ] Gerar material de apresentação + descrição em pt-BR do Scrapy em `comparativo-tests\scrapy\` (mesmo padrão do Celery).
 - [ ] Montar o material de apresentação final com os 5 repositórios.

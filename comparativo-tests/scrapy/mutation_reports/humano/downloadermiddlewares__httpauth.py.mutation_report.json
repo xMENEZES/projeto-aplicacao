@@ -1,0 +1,58 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\scrapy\\human_original\\scrapy\\downloadermiddlewares\\httpauth.py",
+  "total_sites_no_arquivo": 8,
+  "mutantes_gerados": 8,
+  "mortos": 5,
+  "vivos": 3,
+  "escore_mutacao_pct": 62.5,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 40: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 1,
+      "description": "linha 41: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 42: ROR LtE -> Gt",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 57: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 4,
+      "description": "linha 78: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 5,
+      "description": "linha 80: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 6,
+      "description": "linha 84: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 7,
+      "description": "linha 85: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

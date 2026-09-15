@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparação de Testes — Scrapy</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --ink: #1f2430;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --ia: #6366f1;
+    --humano: #059669;
+    --accent: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 24px 96px; }
+  header { margin-bottom: 40px; }
+  header .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  h1 { font-size: 32px; margin: 6px 0 8px; }
+  header p.sub { color: var(--muted); font-size: 15px; margin: 0; }
+
+  section { margin-bottom: 48px; }
+  h2 {
+    font-size: 20px;
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .metodologia-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .metodologia-grid .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .metodologia-grid .card .num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .metodologia-grid .card h3 { margin: 0 0 8px; font-size: 15px; }
+  .metodologia-grid .card p { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 12.5px;
+  }
+  th, td { padding: 9px 10px; text-align: center; border-bottom: 1px solid var(--line); }
+  th { background: #fafaf9; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+  td:first-child, th:first-child { text-align: left; font-weight: 600; }
+  tbody tr:last-child td { border-bottom: none; }
+  .ia-col { color: var(--ia); font-weight: 700; }
+  .humano-col { color: var(--humano); font-weight: 700; }
+  .na { color: var(--muted); font-style: italic; font-weight: 400; }
+
+  .legend { display: flex; gap: 20px; align-items: center; margin: 14px 0 20px; font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot.ia { background: var(--ia); }
+  .dot.humano { background: var(--humano); }
+
+  .barchart .row { margin-bottom: 14px; }
+  .barchart .row .label { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+  .bar-track { background: #edeef0; border-radius: 6px; height: 17px; position: relative; overflow: hidden; margin-bottom: 4px; }
+  .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 10.5px; color: white; font-weight: 700; white-space: nowrap; }
+  .bar-fill.ia { background: var(--ia); }
+  .bar-fill.humano { background: var(--humano); }
+  .bar-fill.na { background: #cbd0d8; color: #555; }
+
+  .scoreboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 16px 0 8px;
+  }
+  .scoreboard .box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .scoreboard .box .n { font-size: 28px; font-weight: 800; }
+  .scoreboard .box .l { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .scoreboard .box.humano .n { color: var(--humano); }
+  .scoreboard .box.empate .n { color: var(--accent); }
+  .scoreboard .box.ia .n { color: var(--ia); }
+
+  .conclusao {
+    background: #fff8ec;
+    border: 1px solid #f3d999;
+    border-radius: 10px;
+    padding: 20px 22px;
+    font-size: 14.5px;
+  }
+  .conclusao strong { color: #92620a; }
+
+  footer { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+  @media (max-width: 640px) {
+    .metodologia-grid, .scoreboard { grid-template-columns: 1fr; }
+    table { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Faculdade · Engenharia de Qualidade e Teste de Software</div>
+    <h1>Testes de IA vs. Testes Humanos — Scrapy</h1>
+    <p class="sub">Comparação de cobertura e teste de mutação em 14 classes do pacote Scrapy 2.17.0, entre uma suíte de testes escrita por IA (sem acesso aos testes originais) e a suíte de testes mantida pelo próprio projeto.</p>
+  </header>
+
+  <section>
+    <h2>Metodologia</h2>
+    <div class="metodologia-grid">
+      <div class="card">
+        <div class="num">1 — Geração</div>
+        <h3>Suíte de IA independente</h3>
+        <p>Testes escritos olhando só o código de produção do Scrapy, sem nunca ler a suíte humana original. Nenhuma das 14 classes teve gap — todas com par humano confirmado.</p>
+      </div>
+      <div class="card">
+        <div class="num">2 — Cobertura</div>
+        <h3>pytest + coverage.py</h3>
+        <p>Cada suíte rodou contra o mesmo código-fonte (v2.17.0), medindo cobertura de linha e de branch nos 14 arquivos-alvo — incluindo crawls reais via um servidor HTML local.</p>
+      </div>
+      <div class="card">
+        <div class="num">3 — Mutação</div>
+        <h3>Ferramenta própria</h3>
+        <p>Mesmo script usado no Celery, ampliado com IOR (is/is not) e SDL (remover comando) para cobrir classes sem comparação/conta/and-or — e adaptado para não desligar o pytest-twisted, necessário para os testes assíncronos de crawl do Scrapy.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Placar — escore de mutação (14 arquivos, ROR/IOR/MOR/AOR/COR/SDL)</h2>
+    <div class="scoreboard">
+      <div class="box humano"><div class="n">7</div><div class="l">arquivos onde o humano venceu</div></div>
+      <div class="box empate"><div class="n">6</div><div class="l">arquivos empatados</div></div>
+      <div class="box ia"><div class="n">1</div><div class="l">arquivo onde a IA venceu</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Resultado consolidado</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Arquivo (classe)</th>
+          <th class="ia-col">Linha IA</th>
+          <th class="humano-col">Linha Hum</th>
+          <th class="ia-col">Branch IA</th>
+          <th class="humano-col">Branch Hum</th>
+          <th class="ia-col">Mutação IA</th>
+          <th class="humano-col">Mutação Hum</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>crawler.py (CrawlerRunner)</td><td class="ia-col">45%</td><td class="humano-col">71%</td><td class="ia-col">20%</td><td class="humano-col">54%</td><td class="ia-col">8,3%</td><td class="humano-col">30,0%</td></tr>
+        <tr><td>downloadermiddlewares/httpauth.py</td><td class="ia-col">85%</td><td class="humano-col">100%</td><td class="ia-col">71%</td><td class="humano-col">100%</td><td class="ia-col">62,5%</td><td class="humano-col">62,5%</td></tr>
+        <tr><td>downloadermiddlewares/offsite.py</td><td class="ia-col">98%</td><td class="humano-col">100%</td><td class="ia-col">83%</td><td class="humano-col">100%</td><td class="ia-col">80,0%</td><td class="humano-col">100,0%</td></tr>
+        <tr><td>downloadermiddlewares/redirect.py</td><td class="ia-col">81%</td><td class="humano-col">92%</td><td class="ia-col">60%</td><td class="humano-col">81%</td><td class="ia-col">58,6%</td><td class="humano-col">75,0%</td></tr>
+        <tr><td>downloadermiddlewares/retry.py</td><td class="ia-col">91%</td><td class="humano-col">99%</td><td class="ia-col">69%</td><td class="humano-col">96%</td><td class="ia-col">80,0%</td><td class="humano-col">100,0%</td></tr>
+        <tr><td>http/request/__init__.py (Request)</td><td class="ia-col">87%</td><td class="humano-col">91%</td><td class="ia-col">74%</td><td class="humano-col">74%</td><td class="ia-col">75,0%</td><td class="humano-col">62,5%</td></tr>
+        <tr><td>http/response/__init__.py (Response)</td><td class="ia-col">91%</td><td class="humano-col">98%</td><td class="ia-col">83%</td><td class="humano-col">92%</td><td class="ia-col">70,0%</td><td class="humano-col">75,0%</td></tr>
+        <tr><td>http/response/text.py</td><td class="ia-col">90%</td><td class="humano-col">97%</td><td class="ia-col">70%</td><td class="humano-col">92%</td><td class="ia-col">100,0%</td><td class="humano-col">100,0%</td></tr>
+        <tr><td>item.py (Item/Field)</td><td class="ia-col">93%</td><td class="humano-col">100%</td><td class="ia-col">95%</td><td class="humano-col">100%</td><td class="ia-col">100,0%</td><td class="humano-col">100,0%</td></tr>
+        <tr><td>settings/__init__.py</td><td class="ia-col">71%</td><td class="humano-col">100%</td><td class="ia-col">58%</td><td class="humano-col">100%</td><td class="ia-col">16,0%</td><td class="humano-col">75,0%</td></tr>
+        <tr><td>signalmanager.py</td><td class="ia-col">82%</td><td class="humano-col">76%</td><td class="ia-col">100%</td><td class="humano-col">100%</td><td class="ia-col">47,4%</td><td class="humano-col">47,4%</td></tr>
+        <tr><td>spidermiddlewares/depth.py</td><td class="ia-col">96%</td><td class="humano-col">92%</td><td class="ia-col">75%</td><td class="humano-col">71%</td><td class="ia-col">75,0%</td><td class="humano-col">100,0%</td></tr>
+        <tr><td>spidermiddlewares/urllength.py</td><td class="ia-col">100%</td><td class="humano-col">100%</td><td class="ia-col">100%</td><td class="humano-col">100%</td><td class="ia-col">100,0%</td><td class="humano-col">100,0%</td></tr>
+        <tr><td>spiders/__init__.py (Spider)</td><td class="ia-col">83%</td><td class="humano-col">93%</td><td class="ia-col">70%</td><td class="humano-col">80%</td><td class="ia-col">100,0%</td><td class="humano-col">100,0%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Escore de mutação, lado a lado (14 arquivos)</h2>
+    <div class="legend">
+      <span><span class="dot ia"></span> IA</span>
+      <span><span class="dot humano"></span> Humano</span>
+    </div>
+    <div class="barchart">
+      <div class="row"><div class="label">crawler.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:8.3%">8,3%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:30%">30,0%</div></div>
+      </div>
+      <div class="row"><div class="label">httpauth.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:62.5%">62,5%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:62.5%">62,5%</div></div>
+      </div>
+      <div class="row"><div class="label">offsite.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:80%">80,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100,0%</div></div>
+      </div>
+      <div class="row"><div class="label">redirect.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:58.6%">58,6%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:75%">75,0%</div></div>
+      </div>
+      <div class="row"><div class="label">retry.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:80%">80,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100,0%</div></div>
+      </div>
+      <div class="row"><div class="label">request/__init__.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:75%">75,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:62.5%">62,5%</div></div>
+      </div>
+      <div class="row"><div class="label">response/__init__.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:70%">70,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:75%">75,0%</div></div>
+      </div>
+      <div class="row"><div class="label">response/text.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:100%">100,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100,0%</div></div>
+      </div>
+      <div class="row"><div class="label">item.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:100%">100,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100,0%</div></div>
+      </div>
+      <div class="row"><div class="label">settings/__init__.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:16%">16,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:75%">75,0%</div></div>
+      </div>
+      <div class="row"><div class="label">signalmanager.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:47.4%">47,4%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:47.4%">47,4%</div></div>
+      </div>
+      <div class="row"><div class="label">spidermiddlewares/depth.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:75%">75,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100,0%</div></div>
+      </div>
+      <div class="row"><div class="label">spidermiddlewares/urllength.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:100%">100,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100,0%</div></div>
+      </div>
+      <div class="row"><div class="label">spiders/__init__.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:100%">100,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100,0%</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Conclusão</h2>
+    <div class="conclusao">
+      Dos 14 arquivos, a suíte humana venceu em <strong>7</strong>, empatou em <strong>6</strong> e a IA venceu em apenas <strong>1</strong>
+      (<code>request/__init__.py</code>). O padrão observado no Celery se repete: mesmo quando a IA cobre mais linhas de código
+      (ex.: <code>crawler.py</code>, <code>settings/__init__.py</code>), a suíte humana mata proporcionalmente mais mutantes —
+      testa com mais intenção cada decisão do código, em vez de só "passar pela linha".
+    </div>
+  </section>
+
+  <footer>
+    Gerado a partir da comparação de testes IA vs. Humano — repositório Scrapy 2.17.0 · dados completos em <code>descricao-comparacao.txt</code>, <code>cov_ia/</code>, <code>cov_humano/</code> e <code>mutation_reports/</code> nesta mesma pasta.
+  </footer>
+
+</div>
+</body>
+</html>

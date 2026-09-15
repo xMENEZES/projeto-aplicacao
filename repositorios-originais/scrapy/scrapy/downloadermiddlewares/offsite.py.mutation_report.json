@@ -1,0 +1,40 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\repositorios-originais\\scrapy\\scrapy\\downloadermiddlewares\\offsite.py",
+  "total_sites_no_arquivo": 5,
+  "mutantes_gerados": 5,
+  "mortos": 4,
+  "vivos": 1,
+  "escore_mutacao_pct": 80.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 74: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 75: ROR NotEq -> Lt",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 86: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 92: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 4,
+      "description": "linha 124: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

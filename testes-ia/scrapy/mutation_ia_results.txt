@@ -1,0 +1,99 @@
+===== ../../repositorios-originais/scrapy/scrapy/downloadermiddlewares/httpauth.py =====
+Mutantes VIVOS (a suite nao percebeu estas mudancas):
+  - linha 57: COR Or -> And
+  - linha 78: COR Or -> And
+  - linha 80: COR Or -> And
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\downloadermiddlewares\httpauth.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/downloadermiddlewares/offsite.py =====
+Escore de mutacao: 80.0%
+
+Mutantes VIVOS (a suite nao percebeu estas mudancas):
+  - linha 92: COR And -> Or
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\downloadermiddlewares\offsite.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/downloadermiddlewares/redirect.py =====
+  - linha 227: AOR Add -> Sub
+  - linha 265: COR Or -> And
+  - linha 266: ROR Eq -> NotEq
+  - linha 278: ROR Lt -> LtE
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\downloadermiddlewares\redirect.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/downloadermiddlewares/retry.py =====
+Escore de mutacao: 80.0%
+
+Mutantes VIVOS (a suite nao percebeu estas mudancas):
+  - linha 114: AOR Add -> Sub
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\downloadermiddlewares\retry.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/http/request/__init__.py =====
+
+Mutantes VIVOS (a suite nao percebeu estas mudancas):
+  - linha 208: COR Or -> And
+  - linha 438: COR And -> Or
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\http\request\__init__.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/http/response/__init__.py =====
+Nenhum ponto mutavel (ROR/AOR/COR) encontrado em C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\http\response\__init__.py.
+
+===== ../../repositorios-originais/scrapy/scrapy/http/response/text.py =====
+[4/4] linha 284: ROR NotEq -> Lt  ->  morto  (exit=1, 3.3s)
+----------------------------------------------------------------------
+Mutantes gerados: 4 | Mortos: 4 | Vivos: 0
+Escore de mutacao: 100.0%
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\http\response\text.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/item.py =====
+[3/3] linha 110: COR Or -> And  ->  morto  (exit=1, 3.4s)
+----------------------------------------------------------------------
+Mutantes gerados: 3 | Mortos: 3 | Vivos: 0
+Escore de mutacao: 100.0%
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\item.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/settings/__init__.py =====
+  - linha 533: ROR Eq -> NotEq
+  - linha 536: COR Or -> And
+  - linha 609: ROR GtE -> Eq
+  - linha 736: COR And -> Or
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\settings\__init__.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/signalmanager.py =====
+Nenhum ponto mutavel (ROR/AOR/COR) encontrado em C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\signalmanager.py.
+
+===== ../../repositorios-originais/scrapy/scrapy/spidermiddlewares/depth.py =====
+Escore de mutacao: 75.0%
+
+Mutantes VIVOS (a suite nao percebeu estas mudancas):
+  - linha 119: AOR Mult -> Div
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\spidermiddlewares\depth.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/spidermiddlewares/urllength.py =====
+[1/1] linha 44: ROR LtE -> Gt  ->  morto  (exit=1, 4.2s)
+----------------------------------------------------------------------
+Mutantes gerados: 1 | Mortos: 1 | Vivos: 0
+Escore de mutacao: 100.0%
+
+Relatorio salvo em: C:\claude\projeto-aplicacao\repositorios-originais\scrapy\scrapy\spidermiddlewares\urllength.py.mutation_report.json
+
+===== ../../repositorios-originais/scrapy/scrapy/crawler.py =====
+Rodando o comando de teste uma vez, sem mutacao, para validar o ambiente...
+
+ERRO: o --test-cmd falhou MESMO SEM MUTACAO NENHUMA (exit=1).
+Isso normalmente significa que o comando em si esta quebrado (caminho errado, executavel nao encontrado, barra normal em vez de contra-barra antes do .exe quando roda via shell=True no Windows, etc.) -- NAO que os testes detectariam qualquer mutacao. Rodando com mutantes nesse estado, cada um apareceria como 'morto' por engano (o comando falha sempre, nao por causa da mutacao). Corrija o --test-cmd e rode de novo.
+
+===== ../../repositorios-originais/scrapy/scrapy/spiders/__init__.py =====
+Rodando o comando de teste uma vez, sem mutacao, para validar o ambiente...
+
+ERRO: o --test-cmd falhou MESMO SEM MUTACAO NENHUMA (exit=1).
+Isso normalmente significa que o comando em si esta quebrado (caminho errado, executavel nao encontrado, barra normal em vez de contra-barra antes do .exe quando roda via shell=True no Windows, etc.) -- NAO que os testes detectariam qualquer mutacao. Rodando com mutantes nesse estado, cada um apareceria como 'morto' por engano (o comando falha sempre, nao por causa da mutacao). Corrija o --test-cmd e rode de novo.
+
+TUDO PRONTO (lado IA)

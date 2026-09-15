@@ -1,0 +1,40 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\scrapy\\human_original\\scrapy\\downloadermiddlewares\\retry.py",
+  "total_sites_no_arquivo": 5,
+  "mutantes_gerados": 5,
+  "mortos": 5,
+  "vivos": 0,
+  "escore_mutacao_pct": 100.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 99: AOR Add -> Sub",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 104: ROR LtE -> Gt",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 115: AOR Add -> Sub",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 174: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 4,
+      "description": "linha 184: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

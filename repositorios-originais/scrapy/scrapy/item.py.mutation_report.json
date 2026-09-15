@@ -1,0 +1,28 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\repositorios-originais\\scrapy\\scrapy\\item.py",
+  "total_sites_no_arquivo": 3,
+  "mutantes_gerados": 3,
+  "mortos": 3,
+  "vivos": 0,
+  "escore_mutacao_pct": 100.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 41: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 58: AOR Add -> Sub",
+      "survived": false,
+      "reason": "exit=4"
+    },
+    {
+      "index": 2,
+      "description": "linha 110: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\scrapy\\human_original\\scrapy\\http\\request\\__init__.py",
+  "total_sites_no_arquivo": 8,
+  "mutantes_gerados": 8,
+  "mortos": 5,
+  "vivos": 3,
+  "escore_mutacao_pct": 62.5,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 158: COR Or -> And",
+      "survived": false,
+      "reason": "exit=2"
+    },
+    {
+      "index": 1,
+      "description": "linha 162: COR Or -> And",
+      "survived": false,
+      "reason": "exit=2"
+    },
+    {
+      "index": 2,
+      "description": "linha 204: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 256: COR And -> Or",
+      "survived": false,
+      "reason": "exit=2"
+    },
+    {
+      "index": 4,
+      "description": "linha 268: COR And -> Or",
+      "survived": false,
+      "reason": "exit=2"
+    },
+    {
+      "index": 5,
+      "description": "linha 409: AOR Add -> Sub",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 6,
+      "description": "linha 409: AOR Add -> Sub",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 7,
+      "description": "linha 416: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    }
+  ]
+}
