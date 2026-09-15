@@ -24,7 +24,7 @@ documentos/                READMEs por repositório, planos de teste (v2), o res
 Cada pasta em `testes-ia/<repositório>/` roda de forma independente
 (`conftest.py` próprio, `requirements-testes.txt` próprio) e importa o
 código de `repositorios-originais/<repositório>/` via `sys.path`, nunca
-via instalação (`pip install`) — garante que os testes sempre rodam
+via instalação (`pip install`)  garante que os testes sempre rodam
 contra o checkout exato documentado em cada
 `documentos/<repositório>/README.md`, não contra qualquer versão do
 pacote que porventura já esteja instalada no ambiente.
@@ -33,7 +33,7 @@ pacote que porventura já esteja instalada no ambiente.
 
 Nenhum teste da suíte de IA (`testes-ia/`) foi escrito olhando a pasta
 de testes humana (`testes-humanos/`) do projeto correspondente — só o
-código de produção foi lido — para que a comparação depois seja justa
+código de produção foi lido  para que a comparação depois seja justa
 (duas suítes independentes sobre o mesmo código). Ver
 `documentos/RESUMO_TESTES_CRIADOS.md` para uma descrição completa dos
 testes criados, classe por classe, e `documentos/RELATORIO_COMPARACAO_TESTES_IA_HUMANOS.md`
