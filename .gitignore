@@ -1,0 +1,15 @@
+# Clones de trabalho completos (com .git próprio) usados para comparação de
+# cobertura/mutação — não fazem parte do conteúdo do repositório.
+**/human_original/
+
+# Ambientes virtuais
+**/.venv/
+**/venv/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.coverage
+.coverage.*

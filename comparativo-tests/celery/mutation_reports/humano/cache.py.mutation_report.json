@@ -1,0 +1,16 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\celery\\human_original\\celery\\backends\\cache.py",
+  "total_sites_no_arquivo": 1,
+  "mutantes_gerados": 1,
+  "mortos": 1,
+  "vivos": 0,
+  "escore_mutacao_pct": 100.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 107: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

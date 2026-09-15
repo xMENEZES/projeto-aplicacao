@@ -1,0 +1,99 @@
+COMPARAÇÃO DE TESTES — CELERY (testes escritos por IA vs. testes humanos originais)
+====================================================================================
+
+O QUE FOI COMPARADO
+--------------------
+Sete arquivos do código-fonte do Celery (versão 5.6.2), escolhidos porque a suíte de
+testes escrita por IA e a suíte de testes humana original do projeto testam as
+mesmas classes/funções neles:
+
+1. celery/app/task.py        -> classe Task (apply, retry, hooks before_start/on_success/on_failure)
+2. celery/app/base.py        -> classe Celery (registro de tasks, config_from_object, send_task)
+3. celery/canvas.py          -> classes Signature, chain, group
+4. celery/bootsteps.py       -> classes Blueprint, Step, StartStopStep
+5. celery/utils/dispatch/signal.py -> classe Signal
+6. celery/backends/cache.py  -> classe CacheBackend
+7. celery/backends/base.py   -> classe Backend (mark_as_done, mark_as_failure)
+
+Esses 7 arquivos foram escolhidos a partir de um mapeamento prévio: para cada
+classe que a suíte de IA testa, foi verificado (via busca de import/uso real)
+se existe um teste humano equivalente no repositório original. No caso do
+Celery, todas as unidades testadas pela IA tinham par humano confirmado — não
+foi necessário ajustar nem remover nenhum caso antes de comparar.
+
+COMO OS TESTES FORAM GERADOS
+------------------------------
+- A suíte de IA foi escrita olhando SOMENTE o código de produção do Celery
+  (nunca leu os testes humanos), usando as técnicas de teste de software
+  (classes de equivalência, valor limite, tabela de decisão, cobertura
+  estrutural) da skill "gerador-de-testes".
+- A suíte humana é a suíte de testes que já vem no próprio repositório do
+  Celery no GitHub (pasta t/unit/), escrita pelos mantenedores do projeto.
+- As duas suítes rodam contra o MESMO código-fonte (mesma versão, 5.6.2) —
+  uma cópia local para a suíte de IA (repo_src/), um clone separado do
+  repositório oficial para a suíte humana (human_original/).
+
+COMO A COBERTURA FOI MEDIDA
+------------------------------
+Ferramenta: pytest + coverage.py (via plugin pytest-cov).
+Comando (mesma ideia dos dois lados, só troca a suíte de teste):
+
+    pytest <arquivos de teste> --cov=celery --cov-branch --cov-report=html
+
+Isso gera um relatório HTML (pastas cov_ia/ e cov_humano/ nesta mesma pasta)
+mostrando, por arquivo, duas métricas:
+  - cobertura de LINHA: quantas linhas do arquivo foram executadas por algum teste.
+  - cobertura de BRANCH (desvio): de cada "if/else", quantos dos dois caminhos
+    possíveis foram realmente exercitados (não basta passar pela linha do "if",
+    tem que testar os dois lados da decisão).
+Branch é a métrica mais importante das duas: um arquivo pode ter 90% de
+cobertura de linha e mesmo assim nunca ter testado o que acontece quando uma
+condição dá falso, por exemplo.
+
+COMO A MUTAÇÃO FOI MEDIDA
+----------------------------
+Teste de mutação é uma forma de medir se os testes realmente VERIFICAM o
+comportamento certo, não só se "passam pela linha" (cobertura de linha/branch
+mostra o que foi executado, mas não garante que o teste checaria um erro ali).
+
+Como funciona: um script (mutation_test.py) pega o arquivo de produção e
+introduz pequenas alterações propositais no código — por exemplo, troca um
+"and" por "or", ou um "==" por "!=", ou um "+" por "-" — uma alteração de cada
+vez (isso se chama "mutante"). Depois disso, roda a suíte de testes:
+  - se algum teste FALHAR -> o mutante foi "morto" (bom sinal: os testes
+    perceberam que o comportamento mudou).
+  - se todos os testes PASSAREM mesmo com o código alterado -> o mutante
+    "sobreviveu" (sinal ruim: existe uma mudança de comportamento que nenhum
+    teste percebe).
+
+O "escore de mutação" é simplesmente:
+    mortos / total de mutantes gerados
+Quanto mais perto de 100%, mais forte é a suíte de testes.
+
+Observação técnica: a ferramenta mais famosa para isso em Python (mutmut) não
+roda nativamente no Windows (exige WSL). Por isso foi escrito um script próprio
+(mutation_test.py, na pasta comparativo-tests/) usando só a biblioteca padrão
+do Python, aplicando os 3 tipos de mutação mais comuns: troca de operador
+relacional (<, <=, >, >=, ==, !=), troca de operador aritmético (+, -, *, /,
+//, %) e troca de operador lógico (and/or).
+
+RESULTADO FINAL
+-----------------
+                          Cobertura Linha      Cobertura Branch      Escore de Mutação
+Arquivo                   IA        Humano      IA        Humano      IA        Humano
+task.py (Task)            75%       57%         54%       86%         35,0%     67,6%
+base.py (Celery)          68%       65%         42%       93%         37,5%     70,0%
+canvas.py                 50%       68%         29%       82%         17,5%     70,0%
+bootsteps.py              80%       52%         62%       79%         35,3%     64,7%
+signal.py (Signal)        76%       38%         75%       100%        60,0%     70,0%
+cache.py (CacheBackend)   61%       100%        17%       100%        100,0%    100,0%
+base.py (Backend)         53%       92%         40%       83%         17,5%     62,5%
+
+CONCLUSÃO
+-----------
+A suíte humana ganhou no escore de mutação em 6 dos 7 arquivos (empate só em
+cache.py, 100% dos dois lados). Isso confirma o que a cobertura de branch já
+sugeria: a IA às vezes toca mais linhas de código, mas verifica menos decisões
+de fato — cobertura de linha alta não é sinônimo de teste forte. A suíte
+humana, mesmo cobrindo menos linhas em alguns arquivos, mata proporcionalmente
+mais mutantes: testa com mais intenção cada desvio de decisão do código.

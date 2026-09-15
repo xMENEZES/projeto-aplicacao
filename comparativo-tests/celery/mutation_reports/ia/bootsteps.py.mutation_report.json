@@ -1,0 +1,112 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\celery\\repo_src\\celery\\bootsteps.py",
+  "total_sites_no_arquivo": 17,
+  "mutantes_gerados": 17,
+  "mortos": 6,
+  "vivos": 11,
+  "escore_mutacao_pct": 35.3,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 51: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 54: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 2,
+      "description": "linha 101: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 102: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 4,
+      "description": "linha 115: AOR Add -> Sub",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 5,
+      "description": "linha 120: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 6,
+      "description": "linha 125: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 7,
+      "description": "linha 139: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 8,
+      "description": "linha 160: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 9,
+      "description": "linha 160: ROR NotEq -> Lt",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 10,
+      "description": "linha 160: ROR NotEq -> Lt",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 11,
+      "description": "linha 244: ROR NotEq -> Lt",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 12,
+      "description": "linha 249: AOR Mod -> Add",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 13,
+      "description": "linha 277: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 14,
+      "description": "linha 349: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 15,
+      "description": "linha 398: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 16,
+      "description": "linha 409: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    }
+  ]
+}

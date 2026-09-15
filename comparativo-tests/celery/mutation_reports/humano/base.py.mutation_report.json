@@ -1,0 +1,250 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\celery\\human_original\\celery\\backends\\base.py",
+  "total_sites_no_arquivo": 44,
+  "mutantes_gerados": 40,
+  "mortos": 25,
+  "vivos": 15,
+  "escore_mutacao_pct": 62.5,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 88: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 143: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 147: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 148: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 4,
+      "description": "linha 173: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 5,
+      "description": "linha 183: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 6,
+      "description": "linha 185: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 7,
+      "description": "linha 229: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 8,
+      "description": "linha 241: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 9,
+      "description": "linha 258: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 11,
+      "description": "linha 281: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 12,
+      "description": "linha 296: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 13,
+      "description": "linha 349: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 14,
+      "description": "linha 487: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 15,
+      "description": "linha 507: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 16,
+      "description": "linha 507: ROR NotEq -> Lt",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 17,
+      "description": "linha 529: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 18,
+      "description": "linha 540: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 19,
+      "description": "linha 551: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 20,
+      "description": "linha 576: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 22,
+      "description": "linha 590: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 23,
+      "description": "linha 629: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 24,
+      "description": "linha 630: ROR Lt -> LtE",
+      "survived": false,
+      "reason": "timeout (arvore de processos finalizada; tratado como morto)"
+    },
+    {
+      "index": 25,
+      "description": "linha 635: AOR Div -> FloorDiv",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 26,
+      "description": "linha 675: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 27,
+      "description": "linha 710: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 28,
+      "description": "linha 711: ROR Lt -> LtE",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 29,
+      "description": "linha 716: AOR Div -> FloorDiv",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 30,
+      "description": "linha 727: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 31,
+      "description": "linha 727: ROR Eq -> NotEq",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 33,
+      "description": "linha 816: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 34,
+      "description": "linha 889: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 35,
+      "description": "linha 889: ROR GtE -> Eq",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 36,
+      "description": "linha 1050: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 37,
+      "description": "linha 1050: ROR GtE -> Eq",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 38,
+      "description": "linha 1050: AOR Mult -> Div",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 39,
+      "description": "linha 1056: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 40,
+      "description": "linha 1056: ROR GtE -> Eq",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 41,
+      "description": "linha 1076: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "timeout (arvore de processos finalizada; tratado como morto)"
+    },
+    {
+      "index": 42,
+      "description": "linha 1151: ROR Gt -> GtE",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+import os
+import textwrap
+
+from conan.test.utils.tools import TestClient
+from conan.internal.util.files import save
+
+
+def test_profile_local_folder_priority_cache():
+    """ includes or args without "./" will resolve to the cache first
+    """
+    c = TestClient()
+    c.save({"profiles/default": f"include(otherprofile)",
+            "profiles/otherprofile": "[settings]\nos=AIX",
+            "conanfile.txt": ""})
+    save(os.path.join(c.paths.profiles_path, "otherprofile"), "[settings]\nos=FreeBSD")
+
+    # Must use local path, otherwise look for it in the cache
+    c.run("install . -pr=./profiles/default")
+    assert "os=FreeBSD" in c.out
+
+
+def test_profile_local_folder_priority_relative():
+    """ The local include(./profile) must have priority over a file with same name in cache
+    """
+    c = TestClient()
+    c.save({"profiles/default": f"include(./otherprofile)",
+            "profiles/otherprofile": "[settings]\nos=AIX",
+            "conanfile.txt": ""})
+    save(os.path.join(c.paths.profiles_path, "otherprofile"), "[settings]\nos=FreeBSD")
+
+    # Must use local path, otherwise look for it in the cache
+    c.run("install . -pr=./profiles/default")
+    assert "os=AIX" in c.out
+
+
+def test_profile_cache_folder_priority():
+    """ The cache include(./profile) must have priority over a file with same name in local
+    """
+    c = TestClient()
+    c.save({"otherprofile": "[settings]\nos=FreeBSD",
+            "conanfile.txt": ""})
+    save(os.path.join(c.paths.profiles_path, "default"), "include(./otherprofile)")
+    save(os.path.join(c.paths.profiles_path, "otherprofile"), "[settings]\nos=AIX")
+
+    c.run("install . -pr=default")
+    assert "os=AIX" in c.out
+
+
+def test_profile_cli_priority():
+    c = TestClient()
+    profile1 = textwrap.dedent("""\
+        [settings]
+        os=AIX
+        [conf]
+        user.myconf:myvalue1=1
+        user.myconf:myvalue2=[2]
+        user.myconf:myvalue3={"3": "4", "a": "b"}
+        user.myconf:myvalue4={"1": "2"}
+        user.myconf:myvalue5={"6": "7"}
+        """)
+    profile2 = textwrap.dedent("""\
+        [settings]
+        os=FreeBSD
+        [conf]
+        user.myconf:myvalue1=2
+        user.myconf:myvalue2+=4
+        user.myconf:myvalue3*={"3": "5"}
+        user.myconf:myvalue5={"6": "7"}
+        """)
+    c.save({"profile1": profile1,
+            "profile2": profile2})
+    c.run("profile show -pr=./profile1 -pr=./profile2")
+    assert "os=FreeBSD" in c.out
+    assert "user.myconf:myvalue1=2" in c.out
+    assert "user.myconf:myvalue2=[2, 4]" in c.out
+    assert "user.myconf:myvalue3={'3': '5', 'a': 'b'}" in c.out
+    assert "user.myconf:myvalue4={'1': '2'}" in c.out
+    assert "user.myconf:myvalue5={'6': '7'}" in c.out
+
+
+def test_profiles_patterns_include_subsetting_before_base():
+    # https://github.com/conan-io/conan/issues/20162
+    # Sub-setting (compiler.cppstd) in an earlier include than the base setting (compiler)
+    # causes "ERROR: 'settings.compiler' value not defined"
+    c = TestClient()
+    product = textwrap.dedent("""\
+        [settings]
+        mypkg/*:compiler.cppstd=17
+        """)
+    os_profile = textwrap.dedent("""\
+        [settings]
+        mypkg/*:compiler=gcc
+        mypkg/*:compiler.version=11
+        mypkg/*:compiler.libcxx=libstdc++11
+        """)
+    leaf = textwrap.dedent("""\
+        include(./product.ini)
+        include(./os.ini)
+        [settings]
+        os=Linux
+        arch=x86_64
+        """)
+    conanfile = textwrap.dedent("""\
+        from conan import ConanFile
+        class MyPkg(ConanFile):
+            name = "mypkg"
+            version = "1.0"
+            settings = "os", "arch", "compiler", "build_type"
+        """)
+    c.save({"profiles/product.ini": product,
+            "profiles/os.ini": os_profile,
+            "profiles/leaf.ini": leaf,
+            "conanfile.py": conanfile})
+    c.run("export .")
+    # Should succeed: compiler base setting from os.ini must take effect even though
+    # product.ini (included first) only defines the sub-setting compiler.cppstd
+    c.run("install --requires=mypkg/1.0 -pr:a=./profiles/leaf.ini --build=missing")
+    assert "compiler=gcc compiler.cppstd=17 compiler.libcxx=libstdc++11 compiler.version=11" in c.out
+
+
+def test_profiles_patterns_include():
+    # https://github.com/conan-io/conan/issues/16718
+    c = TestClient()
+    msvc = textwrap.dedent("""
+        [settings]
+        compiler=msvc
+        compiler.cppstd=14
+        compiler.version=193
+        os=Windows
+
+        test*/*:compiler.cppstd=14
+        """)
+    clang = textwrap.dedent("""
+        include(./msvc)
+        [settings]
+        test*/*:compiler=clang
+        test*/*:compiler.cppstd=17
+        test*/*:compiler.runtime_version=v144
+        test*/*:compiler.version=18
+        """)
+    conanfile = textwrap.dedent("""
+        from conan import ConanFile
+        class Pkg(ConanFile):
+            name = "test_pkg"
+            version = "0.1"
+            settings = "os", "compiler"
+            def generate(self):
+                self.output.info(f"MyCompiler={self.settings.compiler}!!!")
+                self.output.info(f"MyCompilerVersion={self.settings.compiler.version}!!!")
+                self.output.info(f"MyCompilerCpp={self.settings.compiler.cppstd}!!!")
+            """)
+    c.save({"conanfile.py": conanfile,
+            "msvc": msvc,
+            "clang": clang})
+    c.run("install . -pr=clang")
+    assert "MyCompiler=clang!!!" in c.out
+    assert "MyCompilerVersion=18!!!" in c.out
+    assert "MyCompilerCpp=17!!!" in c.out

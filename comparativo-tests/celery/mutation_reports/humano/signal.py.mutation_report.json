@@ -1,0 +1,70 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\celery\\human_original\\celery\\utils\\dispatch\\signal.py",
+  "total_sites_no_arquivo": 10,
+  "mutantes_gerados": 10,
+  "mortos": 7,
+  "vivos": 3,
+  "escore_mutacao_pct": 70.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 157: AOR Mod -> Add",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 184: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 210: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 248: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 4,
+      "description": "linha 274: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 5,
+      "description": "linha 298: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 6,
+      "description": "linha 310: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 7,
+      "description": "linha 323: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 8,
+      "description": "linha 323: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 9,
+      "description": "linha 323: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

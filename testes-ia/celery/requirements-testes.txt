@@ -1,0 +1,12 @@
+pytest==9.1.1
+pytest-cov==7.1.0
+billiard==4.2.4
+kombu==5.6.2
+vine==5.1.0
+amqp==5.3.1
+click==8.2.1
+click-didyoumean==0.3.1
+click-plugins==1.1.1.2
+click-repl==0.3.0
+python-dateutil==2.9.0.post0
+tzlocal==5.4.3

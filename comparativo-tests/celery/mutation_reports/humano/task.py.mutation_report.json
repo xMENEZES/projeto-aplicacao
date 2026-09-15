@@ -1,0 +1,232 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\celery\\human_original\\celery\\app\\task.py",
+  "total_sites_no_arquivo": 37,
+  "mutantes_gerados": 37,
+  "mortos": 25,
+  "vivos": 12,
+  "escore_mutacao_pct": 67.6,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 127: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 148: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 2,
+      "description": "linha 149: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 3,
+      "description": "linha 203: AOR Mult -> Div",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 4,
+      "description": "linha 423: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 5,
+      "description": "linha 564: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 6,
+      "description": "linha 564: ROR Gt -> GtE",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 7,
+      "description": "linha 573: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 8,
+      "description": "linha 573: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 9,
+      "description": "linha 576: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 10,
+      "description": "linha 578: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 11,
+      "description": "linha 605: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 12,
+      "description": "linha 642: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 13,
+      "description": "linha 651: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 14,
+      "description": "linha 651: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 15,
+      "description": "linha 724: AOR Add -> Sub",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 16,
+      "description": "linha 734: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 17,
+      "description": "linha 736: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 18,
+      "description": "linha 746: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 19,
+      "description": "linha 746: ROR Gt -> GtE",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 20,
+      "description": "linha 757: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 21,
+      "description": "linha 793: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 22,
+      "description": "linha 794: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 23,
+      "description": "linha 795: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 24,
+      "description": "linha 796: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 25,
+      "description": "linha 801: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 26,
+      "description": "linha 803: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 27,
+      "description": "linha 819: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 28,
+      "description": "linha 849: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 29,
+      "description": "linha 850: AOR Add -> Sub",
+      "survived": false,
+      "reason": "timeout (tratado como morto)"
+    },
+    {
+      "index": 30,
+      "description": "linha 952: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 31,
+      "description": "linha 959: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 32,
+      "description": "linha 961: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 33,
+      "description": "linha 966: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 34,
+      "description": "linha 974: AOR Add -> Sub",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 35,
+      "description": "linha 986: COR Or -> And",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 36,
+      "description": "linha 992: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

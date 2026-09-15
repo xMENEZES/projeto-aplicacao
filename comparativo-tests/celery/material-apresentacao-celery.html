@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparação de Testes — Celery</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --ink: #1f2430;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --ia: #6366f1;
+    --humano: #059669;
+    --accent: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 48px 24px 96px; }
+  header { margin-bottom: 40px; }
+  header .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  h1 { font-size: 32px; margin: 6px 0 8px; }
+  header p.sub { color: var(--muted); font-size: 15px; margin: 0; }
+
+  section { margin-bottom: 48px; }
+  h2 {
+    font-size: 20px;
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .metodologia-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .metodologia-grid .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .metodologia-grid .card .num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .metodologia-grid .card h3 { margin: 0 0 8px; font-size: 15px; }
+  .metodologia-grid .card p { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 13.5px;
+  }
+  th, td { padding: 10px 12px; text-align: center; border-bottom: 1px solid var(--line); }
+  th { background: #fafaf9; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+  td:first-child, th:first-child { text-align: left; font-weight: 600; }
+  tbody tr:last-child td { border-bottom: none; }
+  .ia-col { color: var(--ia); font-weight: 700; }
+  .humano-col { color: var(--humano); font-weight: 700; }
+
+  .legend { display: flex; gap: 20px; align-items: center; margin: 14px 0 20px; font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot.ia { background: var(--ia); }
+  .dot.humano { background: var(--humano); }
+
+  .barchart .row { margin-bottom: 16px; }
+  .barchart .row .label { font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+  .bar-track { background: #edeef0; border-radius: 6px; height: 18px; position: relative; overflow: hidden; margin-bottom: 4px; }
+  .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; color: white; font-weight: 700; white-space: nowrap; }
+  .bar-fill.ia { background: var(--ia); }
+  .bar-fill.humano { background: var(--humano); }
+
+  .conclusao {
+    background: #fff8ec;
+    border: 1px solid #f3d999;
+    border-radius: 10px;
+    padding: 20px 22px;
+    font-size: 14.5px;
+  }
+  .conclusao strong { color: #92620a; }
+
+  footer { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+  @media (max-width: 640px) {
+    .metodologia-grid { grid-template-columns: 1fr; }
+    table { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Faculdade · Engenharia de Qualidade e Teste de Software</div>
+    <h1>Testes de IA vs. Testes Humanos — Celery</h1>
+    <p class="sub">Comparação de cobertura e teste de mutação em 7 classes do pacote Celery 5.6.2, entre uma suíte de testes escrita por IA (sem acesso aos testes originais) e a suíte de testes mantida pelo próprio projeto.</p>
+  </header>
+
+  <section>
+    <h2>Metodologia</h2>
+    <div class="metodologia-grid">
+      <div class="card">
+        <div class="num">1 — Geração</div>
+        <h3>Suíte de IA independente</h3>
+        <p>Testes escritos olhando só o código de produção do Celery, sem nunca ler a suíte humana original — para permitir uma comparação justa entre as duas abordagens.</p>
+      </div>
+      <div class="card">
+        <div class="num">2 — Cobertura</div>
+        <h3>pytest + coverage.py</h3>
+        <p>Cada suíte rodou contra o mesmo código-fonte (v5.6.2), medindo cobertura de linha e de branch (decisão) nos 7 arquivos-alvo.</p>
+      </div>
+      <div class="card">
+        <div class="num">3 — Mutação</div>
+        <h3>Ferramenta própria</h3>
+        <p>Como o mutmut não roda no Windows, um script próprio (ROR/AOR/COR) introduziu defeitos artificiais no código e mediu quantos cada suíte detectou.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Resultado consolidado</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Arquivo (classe)</th>
+          <th class="ia-col">Linha — IA</th>
+          <th class="humano-col">Linha — Humano</th>
+          <th class="ia-col">Branch — IA</th>
+          <th class="humano-col">Branch — Humano</th>
+          <th class="ia-col">Mutação — IA</th>
+          <th class="humano-col">Mutação — Humano</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>app/task.py (Task)</td><td class="ia-col">75%</td><td class="humano-col">57%</td><td class="ia-col">54%</td><td class="humano-col">86%</td><td class="ia-col">35,0%</td><td class="humano-col">67,6%</td></tr>
+        <tr><td>app/base.py (Celery)</td><td class="ia-col">68%</td><td class="humano-col">65%</td><td class="ia-col">42%</td><td class="humano-col">93%</td><td class="ia-col">37,5%</td><td class="humano-col">70,0%</td></tr>
+        <tr><td>canvas.py (Signature/chain/group)</td><td class="ia-col">50%</td><td class="humano-col">68%</td><td class="ia-col">29%</td><td class="humano-col">82%</td><td class="ia-col">17,5%</td><td class="humano-col">70,0%</td></tr>
+        <tr><td>bootsteps.py (Blueprint/Step)</td><td class="ia-col">80%</td><td class="humano-col">52%</td><td class="ia-col">62%</td><td class="humano-col">79%</td><td class="ia-col">35,3%</td><td class="humano-col">64,7%</td></tr>
+        <tr><td>utils/dispatch/signal.py (Signal)</td><td class="ia-col">76%</td><td class="humano-col">38%</td><td class="ia-col">75%</td><td class="humano-col">100%</td><td class="ia-col">60,0%</td><td class="humano-col">70,0%</td></tr>
+        <tr><td>backends/cache.py (CacheBackend)</td><td class="ia-col">61%</td><td class="humano-col">100%</td><td class="ia-col">17%</td><td class="humano-col">100%</td><td class="ia-col">100,0%</td><td class="humano-col">100,0%</td></tr>
+        <tr><td>backends/base.py (Backend)</td><td class="ia-col">53%</td><td class="humano-col">92%</td><td class="ia-col">40%</td><td class="humano-col">83%</td><td class="ia-col">17,5%</td><td class="humano-col">62,5%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Cobertura de branch (decisão), lado a lado</h2>
+    <div class="legend">
+      <span><span class="dot ia"></span> IA</span>
+      <span><span class="dot humano"></span> Humano</span>
+    </div>
+    <div class="barchart">
+      <div class="row"><div class="label">task.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:54%">54%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:86%">86%</div></div>
+      </div>
+      <div class="row"><div class="label">base.py (Celery)</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:42%">42%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:93%">93%</div></div>
+      </div>
+      <div class="row"><div class="label">canvas.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:29%">29%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:82%">82%</div></div>
+      </div>
+      <div class="row"><div class="label">bootsteps.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:62%">62%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:79%">79%</div></div>
+      </div>
+      <div class="row"><div class="label">signal.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:75%">75%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100%</div></div>
+      </div>
+      <div class="row"><div class="label">cache.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:17%">17%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100%</div></div>
+      </div>
+      <div class="row"><div class="label">backends/base.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:40%">40%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:83%">83%</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Escore de mutação, lado a lado</h2>
+    <div class="legend">
+      <span><span class="dot ia"></span> IA</span>
+      <span><span class="dot humano"></span> Humano</span>
+    </div>
+    <div class="barchart">
+      <div class="row"><div class="label">task.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:35%">35,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:67.6%">67,6%</div></div>
+      </div>
+      <div class="row"><div class="label">base.py (Celery)</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:37.5%">37,5%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:70%">70,0%</div></div>
+      </div>
+      <div class="row"><div class="label">canvas.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:17.5%">17,5%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:70%">70,0%</div></div>
+      </div>
+      <div class="row"><div class="label">bootsteps.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:35.3%">35,3%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:64.7%">64,7%</div></div>
+      </div>
+      <div class="row"><div class="label">signal.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:60%">60,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:70%">70,0%</div></div>
+      </div>
+      <div class="row"><div class="label">cache.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:100%">100,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:100%">100,0%</div></div>
+      </div>
+      <div class="row"><div class="label">backends/base.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:17.5%">17,5%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:62.5%">62,5%</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Conclusão</h2>
+    <div class="conclusao">
+      A suíte humana venceu o escore de mutação em <strong>6 dos 7 arquivos</strong> (empate só em <code>cache.py</code>, 100% dos dois lados).
+      A IA às vezes toca mais linhas de código — mas cobertura de linha alta não significa teste forte: em quase todos os arquivos,
+      a suíte humana testa <strong>menos linhas, porém mais decisões</strong> (cobertura de branch bem mais alta), e isso se traduz
+      diretamente em mais mutantes mortos — ou seja, testes que realmente verificam o comportamento certo, não só "passam pela linha".
+    </div>
+  </section>
+
+  <footer>
+    Gerado a partir da comparação de testes IA vs. Humano — repositório Celery 5.6.2 · dados completos em <code>descricao-comparacao.txt</code>, <code>cov_ia/</code> e <code>cov_humano/</code> nesta mesma pasta.
+  </footer>
+
+</div>
+</body>
+</html>

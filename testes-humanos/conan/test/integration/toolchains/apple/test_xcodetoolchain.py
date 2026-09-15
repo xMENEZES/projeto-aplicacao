@@ -1,0 +1,172 @@
+import platform
+import re
+import textwrap
+
+import pytest
+
+from conan.test.utils.tools import TestClient
+
+
+def _get_filename(configuration, architecture, sdk_version):
+    props = [("configuration", configuration),
+             ("architecture", architecture),
+             ("sdk version", sdk_version)]
+    name = "".join("_{}".format(v) for _, v in props if v is not None and v)
+    name = name.replace(".", "_").replace("-", "_")
+    return name.lower()
+
+
+def _condition(configuration, architecture, sdk_version):
+    sdk = "macosx{}".format(sdk_version or "*")
+    return "[config={}][arch={}][sdk={}]".format(configuration, architecture, sdk)
+
+
+@pytest.mark.skipif(platform.system() != "Darwin", reason="Only for MacOS")
+@pytest.mark.parametrize("configuration, os_version, libcxx, cppstd, arch, sdk_version, clang_cppstd", [
+    ("Release", "", "", "", "x86_64", "", ""),
+    ("Debug", "", "", "", "armv8", "", ""),
+    ("Release", "12.0", "libc++", "20", "x86_64", "", "c++20"),
+    ("Debug", "12.0", "libc++", "20", "x86_64", "", "c++20"),
+    ("Release", "12.0", "libc++", "20", "x86_64", "11.3", "c++20"),
+    ("Release", "12.0", "libc++", "20", "x86_64", "", "c++20"),
+])
+def test_toolchain_files(configuration, os_version, cppstd, libcxx, arch, sdk_version, clang_cppstd):
+    client = TestClient()
+    client.save({"conanfile.txt": "[generators]\nXcodeToolchain\n"})
+    cmd = "install . -s build_type={}".format(configuration)
+    cmd = cmd + " -s os.version={}".format(os_version) if os_version else cmd
+    cmd = cmd + " -s compiler.cppstd={}".format(cppstd) if cppstd else cmd
+    cmd = cmd + " -s os.sdk_version={}".format(sdk_version) if sdk_version else cmd
+    cmd = cmd + " -s arch={}".format(arch) if arch else cmd
+    client.run(cmd)
+    arch_name = "arm64" if arch == "armv8" else arch
+    filename = _get_filename(configuration, arch_name, sdk_version)
+    condition = _condition(configuration, arch, sdk_version)
+
+    toolchain_all = client.load("conantoolchain.xcconfig")
+    toolchain_vars = client.load("conantoolchain{}.xcconfig".format(filename))
+    conan_config = client.load("conan_config.xcconfig")
+
+    assert '#include "conantoolchain.xcconfig"' in conan_config
+    assert '#include "conantoolchain{}.xcconfig"'.format(filename) in toolchain_all
+
+    if libcxx:
+        assert 'CLANG_CXX_LIBRARY{}={}'.format(condition, libcxx) in toolchain_vars
+    if os_version:
+        assert 'MACOSX_DEPLOYMENT_TARGET{}={}'.format(condition, os_version) in toolchain_vars
+    if cppstd:
+        assert 'CLANG_CXX_LANGUAGE_STANDARD{}={}'.format(condition, clang_cppstd) in toolchain_vars
+
+
+@pytest.mark.skipif(platform.system() != "Darwin", reason="Only for MacOS")
+def test_toolchain_flags():
+    client = TestClient()
+    client.save({"conanfile.txt": "[generators]\nXcodeToolchain\n"})
+    cmd = "install . -s build_type=Release -s arch=x86_64 " \
+          "-c 'tools.build:cxxflags=[\"cxxflags_release\"]' " \
+          "-c 'tools.build:defines=[\"defines_release\"]' " \
+          "-c 'tools.build:cflags=[\"cflags_release\"]' " \
+          "-c 'tools.build:sharedlinkflags=[\"sharedlinkflags_release\"]' " \
+          "-c 'tools.build:exelinkflags=[\"exelinkflags_release\"]'"
+    client.run(cmd)
+    filename = _get_filename("Release", "x86_64", None)
+    condition = _condition("Release", "x86_64", None)
+
+    conan_global_flags_props = client.load("conan_global_flags{}.xcconfig".format(filename))
+    assert "GCC_PREPROCESSOR_DEFINITIONS{} = $(inherited) defines_release".format(condition) in conan_global_flags_props
+    assert "OTHER_CFLAGS{} = $(inherited) cflags_release".format(condition) in conan_global_flags_props
+    assert "OTHER_CPLUSPLUSFLAGS{} = $(inherited) cxxflags_release".format(condition) in conan_global_flags_props
+    assert "OTHER_LDFLAGS{} = $(inherited) sharedlinkflags_release exelinkflags_release".format(condition) in conan_global_flags_props
+
+    # A second install, for a different configuration, must not overwrite the
+    # first one's flags -- each stays reachable under its own condition.
+    client.run("install . -s build_type=Debug -s arch=x86_64 -c 'tools.build:cxxflags=[\"cxxflags_debug\"]'")
+    debug_filename = _get_filename("Debug", "x86_64", None)
+    debug_flags = client.load("conan_global_flags{}.xcconfig".format(debug_filename))
+    assert "cxxflags_debug" in debug_flags
+    assert "cxxflags_release" not in debug_flags
+
+    conan_global_flags = client.load("conan_global_flags.xcconfig")
+    assert '#include "conan_global_flags{}.xcconfig"'.format(filename) in conan_global_flags
+    assert '#include "conan_global_flags{}.xcconfig"'.format(debug_filename) in conan_global_flags
+    conan_global_file = client.load("conan_config.xcconfig")
+    assert '#include "conan_global_flags.xcconfig"' in conan_global_file
+
+
+@pytest.mark.skipif(platform.system() != "Darwin", reason="Only for MacOS")
+def test_toolchain_build_settings():
+    client = TestClient()
+    conanfile = textwrap.dedent("""
+        from conan import ConanFile
+        from conan.tools.apple import XcodeToolchain
+        class Demo(ConanFile):
+            settings = "os", "arch", "compiler", "build_type"
+            def generate(self):
+                tc = XcodeToolchain(self)
+                tc.build_settings["OTHER_SWIFT_FLAGS"] = "$(inherited) -cxx-interoperability-mode=default"
+                tc.generate()
+        """)
+    client.save({"conanfile.py": conanfile})
+    client.run("install . -s build_type=Release -s arch=x86_64")
+    filename = _get_filename("Release", "x86_64", None)
+    condition = _condition("Release", "x86_64", None)
+
+    conan_global_flags_props = client.load("conan_global_flags{}.xcconfig".format(filename))
+    assert "OTHER_SWIFT_FLAGS{} = $(inherited) -cxx-interoperability-mode=default".format(condition) in conan_global_flags_props
+
+
+@pytest.mark.skipif(platform.system() != "Darwin", reason="Only for MacOS")
+def test_flags_generated_if_only_defines():
+    # https://github.com/conan-io/conan/issues/16422
+    client = TestClient()
+    client.save({"conanfile.txt": "[generators]\nXcodeToolchain\n"})
+    client.run("install . -s build_type=Release -s arch=x86_64 -c 'tools.build:defines=[\"MYDEFINITION\"]'")
+    filename = _get_filename("Release", "x86_64", None)
+    condition = _condition("Release", "x86_64", None)
+
+    conan_global_flags_props = client.load("conan_global_flags{}.xcconfig".format(filename))
+    assert "GCC_PREPROCESSOR_DEFINITIONS{} = $(inherited) MYDEFINITION".format(condition) in conan_global_flags_props
+    conan_global_file = client.load("conan_config.xcconfig")
+    assert '#include "conan_global_flags.xcconfig"' in conan_global_file
+
+
+@pytest.mark.skipif(platform.system() != "Darwin", reason="Only for MacOS")
+@pytest.mark.parametrize("os_name, sdk, min_version, deployment_target_flag", [
+    ("Macos", None, "11.0", "MACOSX_DEPLOYMENT_TARGET"),
+    ("iOS", "iphoneos", "18.0", "IPHONEOS_DEPLOYMENT_TARGET"),
+    ("tvOS", "appletvos", "18.4", "TVOS_DEPLOYMENT_TARGET"),
+    ("watchOS", "watchos", "9.0", "WATCHOS_DEPLOYMENT_TARGET"),
+    ("visionOS", "xros", "2.0", "XROS_DEPLOYMENT_TARGET"),
+])
+def test_xcodetoolchain_xcconfig_deplyment_target(os_name, sdk, min_version, deployment_target_flag):
+    client = TestClient()
+
+    conanfile = textwrap.dedent(f"""
+        import os
+        from conan import ConanFile
+        from conan.tools.apple import XcodeToolchain
+        from conan.tools.files import save
+        class MyApplicationConan(ConanFile):
+            name = "myapplication"
+            version = "1.0"
+            settings = "os", "compiler", "build_type", "arch"
+            def generate(self):
+                tc = XcodeToolchain(self)
+                tc.generate()
+                # Private access to get the generated xcconfig filename
+                # It changes based on the settings, so this is the less fragile way to get it
+                save(self, os.path.join(self.generators_folder, "name.txt"), tc._vars_xconfig_filename)
+        """)
+
+    client.save({"conanfile.py": conanfile})
+
+    settings = f"-s os={os_name} -s os.version={min_version}"
+    if sdk:
+        settings += f" -s os.sdk={sdk}"
+
+    client.run(f"install . -s build_type=Release {settings} --build=missing")
+
+    xcconfig_name = client.load("name.txt").strip()
+    xcconfig = client.load(xcconfig_name)
+    match = re.search(f"^{deployment_target_flag}.+={min_version}$", xcconfig, re.MULTILINE)
+    assert match is not None

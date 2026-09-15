@@ -1,0 +1,40 @@
+Mutantes gerados: 40 | Mortos: 14 | Vivos: 26
+Escore de mutacao: 35.0%
+
+Mutantes gerados: 40 | Mortos: 15 | Vivos: 25
+Escore de mutacao: 37.5%
+
+Mutantes gerados: 40 | Mortos: 7 | Vivos: 33
+Escore de mutacao: 17.5%
+
+Mutantes gerados: 10 | Mortos: 6 | Vivos: 4
+Escore de mutacao: 60.0%
+
+Mutantes gerados: 1 | Mortos: 1 | Vivos: 0
+Escore de mutacao: 100.0%
+
+Mutantes gerados: 40 | Mortos: 7 | Vivos: 33
+Escore de mutacao: 17.5%
+
+
+-----------------------------------------------------
+Mutantes gerados: 17 | Mortos: 11 | Vivos: 6
+Escore de mutacao: 64.7%
+
+Mutantes gerados: 37 | Mortos: 25 | Vivos: 12
+Escore de mutacao: 67.6%
+
+Mutantes gerados: 40 | Mortos: 28 | Vivos: 12
+Escore de mutacao: 70%
+
+Mutantes gerados: 40 | Mortos: 28 | Vivos: 12
+Escore de mutacao: 70.0%
+
+Mutantes gerados: 10 | Mortos: 7 | Vivos: 3
+Escore de mutacao: 70.0%
+
+Mutantes gerados: 1 | Mortos: 1 | Vivos: 0
+Escore de mutacao: 100.0%
+
+Mutantes gerados: 40 | Mortos: 25 | Vivos: 15
+Escore de mutacao: 62.5%
