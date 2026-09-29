@@ -267,11 +267,96 @@ Com isso: `response/__init__.py` foi de "sem pontos mutáveis" para 70,0% (IA) /
 
 **Status: Scrapy CONCLUÍDO (14/14 arquivos com escore de mutação).**
 
+### 7.3 Requests — CONCLUÍDO
+
+**Ajustes da Etapa 2 aplicados e validados (28/09/2026):**
+- `v2_metodologia_formal/test_funcional_classes_valor_limite.py`: CT01–CT07 (`prepare_url`) reescritos para passar por `Request(...).prepare()` em vez de chamar `PreparedRequest.prepare_url()` isolado; CT31 (`HTTPBasicAuth`) reescrito para usar `auth=(123, "senha")` (tupla) em vez de instanciar `HTTPBasicAuth` direto.
+- `v2_metodologia_formal/test_estrutural_decisao.py`: CT19–CT26 (`rebuild_method`) reescritos para passar por redirecionamentos reais contra o servidor local (`conftest.py::live_server`), em vez de chamar `Session.rebuild_method(p, r)` isolado com objetos fabricados — confirmado por grep que a suíte humana (`tests/test_requests.py`) nunca chama `rebuild_method` direto em nenhum nível, só observa o método final da requisição após o redirect. Duas rotas novas (`/redirect-307-temporary`, `/redirect-308-permanent-preserva`) adicionadas ao `conftest.py` para cobrir as regras R7 (307/308 sempre preservam método e corpo) que não tinham endpoint ainda.
+- `should_strip_auth` (CT27–CT30) e o Digest (CT32–CT33) mantidos como já estavam: a própria suíte humana também chama `should_strip_auth` isolado, então não havia ajuste a fazer ali.
+- **Removidos** (sem par humano possível, confirmado nesta etapa): `prepare_content_length`, `merge_setting`/`merge_hooks`, `BaseAdapter`, `HTTPProxyAuth` — já não tinham teste na suíte de IA (ajuste feito em sessão anterior).
+- Validado: suíte de IA completa (v1 + v2) — **209 testes, todos passando** (`.venv\Scripts\python.exe -m pytest . -q`).
+
+**Ambiente:**
+- `testes-ia\requests\.venv\` criado, dependências de `requirements-testes.txt` instaladas.
+- `requests\human_original\.venv\` criado, `pip install -e ".[socks]"` + `pytest-httpbin`/`httpbin`/`trustme` instalados. Versão confirmada: `requests 2.34.2` resolvendo para `human_original\src\requests\`.
+- **Incidente:** 1 teste humano falha por ambiente (`test_different_connection_pool_for_tls_settings_verify_bundle_unexpired_cert`) — o bundle de certificado `tests/certs/valid/ca/ca.crt` não existe no checkout (pasta `certs/valid/ca` vazia; só `certs/expired/ca` tem os arquivos gerados). Não é um problema introduzido por este projeto — é um artefato de geração de certificado (`trustme`/Makefile) que não roda neste ambiente. Deselecionado (`--deselect`) de todos os comandos de teste do lado humano, documentado aqui em vez de silenciado.
+
+**Arquivos-alvo (8, mapeados por área do código-fonte testada por cada arquivo estrutural da IA):** `models.py`, `sessions.py`, `adapters.py`, `auth.py`, `cookies.py`, `hooks.py`, `structures.py`, `api.py`.
+
+**Cobertura medida (`pytest --cov=requests --cov-branch --cov-report=html`):**
+
+| Arquivo | Linha IA | Linha Humano | Branch IA | Branch Humano |
+|---|---|---|---|---|
+| models.py | 75,0% | 92,2% | 59,8% | 88,6% |
+| sessions.py | 90,0% | 95,0% | 76,0% | 91,7% |
+| adapters.py | 73,7% | 86,6% | 48,6% | 82,4% |
+| auth.py | 82,7% | 86,9% | 56,1% | 62,1% |
+| cookies.py | 75,6% | 79,3% | 57,1% | 56,1% |
+| hooks.py | 100,0% | 100,0% | 100,0% | 100,0% |
+| structures.py | 92,0% | 98,0% | 66,7% | 83,3% |
+| api.py | 95,5% | 86,4% | — (sem desvios) | — (sem desvios) |
+
+**Mutação** (`mutation_test.py`, `--max-mutants 15` para os 5 arquivos grandes — `models/sessions/adapters/auth/cookies`, ~150–370 pontos mutáveis cada — e `--max-mutants 40` (sem corte real) para `hooks/structures/api`; mesmo corte nos dois lados para sortear e comparar exatamente os mesmos pontos):
+
+| Arquivo | Mutantes | Escore IA | Escore Humano |
+|---|---|---|---|
+| models.py | 15 | 60,0% | 86,7% |
+| sessions.py | 15 | 46,7% | 73,3% |
+| adapters.py | 15 | 33,3% | 66,7% |
+| auth.py | 15 | 46,7% | 33,3% |
+| cookies.py | 15 | 53,3% | 66,7% |
+| hooks.py | 10 | 100,0% | 100,0% |
+| structures.py | 30 | 60,0% | 76,7% |
+| api.py | 9 | 88,9% | 55,6% |
+
+**Incidente — flakiness intermitente no lote humano:** o lote (`requests\human_original\run_mutation_humano.sh`) travou 3 vezes na checagem de ambiente ("comando falha mesmo sem mutação"), sempre num arquivo diferente, sem padrão de qual arquivo. Confirmado por reexecução manual do EXATO mesmo comando, isolado, logo em seguida — sempre passou (364 testes) — descartando comando quebrado. Causa provável: esgotamento de portas/`TIME_WAIT` do servidor local que `pytest-httpbin` sobe a cada execução, depois de dezenas de execuções seguidas na mesma sessão do Windows (não confirmado com certeza, mas é a explicação mais provável dada a natureza do teste). **Correção:** adicionado retry (até 3 tentativas, com 20s de espera entre elas) em `run_mutation_humano.sh` — na prática, todo arquivo passou já na 1ª ou 2ª tentativa depois disso.
+
+**Conclusão do Requests:** dos 8 arquivos, a suíte humana venceu em **5** (`models.py`, `sessions.py`, `adapters.py`, `cookies.py`, `structures.py`), a IA venceu em **2** (`auth.py`, `api.py`) e empatou em **1** (`hooks.py`, 100%/100%). Mesmo padrão dos outros dois repositórios: mesmo onde a IA cobre mais linha/branch (ex.: `sessions.py`: 90%/76% IA vs. 95%/91,7% Humano — diferença pequena de cobertura), o escore de mutação humano é bem maior (46,7% vs. 73,3%), sinal de testes mais intencionais, não só mais abrangentes. A IA se destacou em `api.py` (testes de aceitação/integração fim-a-fim contra o servidor local, cobrindo a API pública de ponta a ponta) e em `auth.py` (onde a suíte humana tem menos casos de borda do Digest/Basic auth do que a suíte de IA gerada a partir das técnicas formais da skill).
+
+**Status: Requests CONCLUÍDO (8/8 arquivos com cobertura + mutação).**
+
+### 7.4 Conan — CONCLUÍDO
+
+**Ajustes da Etapa 2:** ao revisar a suíte de IA, os 3 arquivos v1 (`test_estrutural_options.py`, `test_estrutural_requires.py`) e os 2 arquivos v2 (`test_decisao_package_option.py`, `test_decisao_version_requires.py`) já estavam corretamente reescritos via `TestClient` (receitas reais + `conan create`/`graph info`), sem nenhuma instanciação direta de `_PackageOption(s)`/`Requirement(s)`. Só restava um ponto: `test_estrutural_version.py::test_upper_bound_exclui_prereleases` ainda instanciava `VersionRange(...)` isolado — reescrito para resolver a mesma regra (pré-release da própria versão-limite não entra na faixa) via `requires="liba/[<limite]"` real, resolvido por `graph info`, reaproveitando os helpers (`_lib`, `_app_com_faixa`, `_versao_resolvida`) já usados pelo resto do arquivo para `VersionRange`. Import de `VersionRange` agora não usado, removido. Validado: suíte de IA completa (v1 + v2) — **89 testes, todos passando**.
+
+**Incidente — versão do clone humano não batia com a da suíte de IA (28/09/2026):** ao instalar o `conan/human_original/` (clonado por outra sessão em 11/09/2026), `conan.__version__` acusou `2.33.0-dev`, enquanto `repositorios-originais/conan` (usado pela suíte de IA) é `2.32.0-dev` — **códigos-fonte de commits diferentes**, o que invalidaria a comparação (diferenças de escore poderiam vir do código, não dos testes). `repositorios-originais/conan` não tem `.git` próprio (só arquivos copiados pela reorg da outra sessão), então não havia como obter o hash exato ali. Resolvido cruzando a API do GitHub (`conan-io/conan`): a janela de commits com `__version__ == '2.32.0-dev'` vai de `638dbef1` (23/07/2026) a `1521d2cf` (bump para 2.32.0 em 31/08/2026); dentro dela, só um commit (`a8f9da35`, 26/08/2026) tocou `requires.py` (feature `package_type_traits`) — como `repositorios-originais/conan` **não tem** essa feature, o commit usado é necessariamente o pai dele. Confirmado por diff byte-a-byte (ignorando CRLF/LF) dos 4 arquivos-alvo (`options.py`, `requires.py`, `version.py`, `version_range.py`) contra o commit `bff82174` — os 4 batem exatamente. `conan/human_original/` realinhado para esse commit (`git fetch --depth 1` + `git reset --hard`, dentro do próprio repositório git já existente, sem apagar a pasta) e reinstalado (`pip install -e .`); `conan.__version__` confirma `2.32.0-dev` agora.
+
+**Ambiente:**
+- `testes-ia\conan\.venv\` criado, dependências de `requirements-testes.txt` instaladas.
+- `conan\human_original\.venv\` criado, `pip install -r conans/requirements.txt -r conans/requirements_dev.txt` + `pip install -e .`.
+
+**Arquivos-alvo (4):** `options.py`, `requires.py`, `version.py`, `version_range.py` (todos em `conan/internal/model/`). Suíte humana do Conan não tem 1 arquivo de teste por classe (como Celery/Scrapy) nem é monolítica (como Requests) — é organizada em `test/unittests/` (unitário direto) e `test/integration/`+`test/functional/` (via CLI/grafo). `options.py` e `version.py`/`version_range.py` têm unittest direto (`test/unittests/model/options_test.py`, `test/unittests/model/version/*.py`); `requires.py` **não tem nenhum unittest direto** — só é exercitado via integração (`self.requires()`/`tool_requires()` num conanfile real, resolvido por `conan create`/`graph info`), confirmado por busca no código-fonte da suíte humana — é exatamente o mesmo nível de abstração que a suíte de IA reescrita usa agora para essa classe.
+
+**Cobertura medida (`pytest --cov=conan --cov-branch --cov-report=html`):**
+
+| Arquivo | Linha IA | Linha Humano | Branch IA | Branch Humano |
+|---|---|---|---|---|
+| options.py | 84,9% | 95,6% | 72,6% | 89,6% |
+| requires.py | 67,7% | 84,6% | 48,7% | 71,7% |
+| version.py | 89,0% | 94,1% | 96,7% | 100,0% |
+| version_range.py | 53,9% | 94,1% | 44,7% | 93,2% |
+
+**Mutação** (`--max-mutants 15` para `options.py`/`requires.py` — mais lentos do lado humano, ~58–61s por execução via `TestClient` real — e `--max-mutants 40` para `version.py`/`version_range.py`, mesmo corte nos dois lados):
+
+| Arquivo | Mutantes | Escore IA | Escore Humano |
+|---|---|---|---|
+| options.py | 15 | 66,7% | 86,7% |
+| requires.py | 15 | 53,3% | 60,0% |
+| version.py | 40 | 85,0% | 65,0% |
+| version_range.py | 40 | 32,5% | 85,0% |
+
+**Conclusão do Conan:** dos 4 arquivos, a suíte humana venceu em **3** (`options.py`, `requires.py`, `version_range.py`) e a IA venceu em **1** (`version.py`, 85,0% vs. 65,0%). `version_range.py` é o caso mais marcante do repositório inteiro: cobertura de linha da IA bem menor (53,9% vs. 94,1% humano — a IA testa a faixa de versão quase só pelos operadores "felizes", sem explorar tantos casos de erro/borda quanto a suíte humana, que tem décadas de bugs de parsing de versão acumulados em forma de teste de regressão), e o escore de mutação reflete isso de forma amplificada (32,5% vs. 85,0%). Já em `version.py` — a única classe de valor pura do lote, sem depender de grafo/cache — a suíte de IA (gerada com foco explícito em classes de equivalência e casos de borda: zeros à direita, `bump()`, comparação numérica vs. lexicográfica) supera a suíte humana, um padrão que também apareceu em `auth.py`/`api.py` do Requests: em unidades pequenas e autocontidas, a técnica formal de geração de testes consegue igualar ou superar décadas de teste de regressão humano.
+
+**Status: Conan CONCLUÍDO (4/4 arquivos com cobertura + mutação).**
+
+### 7.5 Dask — PENDENTE
+
 ## 8. Próximos passos
 
 - [x] Celery concluído (cobertura + mutação, tabela final na seção 7.1).
 - [x] Scrapy concluído (cobertura + mutação, tabela final na seção 7.2).
-- [ ] Aplicar os ajustes da Etapa 2 em Requests e Conan, depois medir (clones humanos já prontos em `requests\human_original\` e `conan\human_original\`, sem venv ainda).
+- [x] Requests concluído (cobertura + mutação, tabela final na seção 7.3).
+- [x] Conan concluído (cobertura + mutação, tabela final na seção 7.4).
+- [x] Gerar `descricao-comparacao.txt` + material de apresentação de Requests e Conan em `comparativo-tests\requests\` e `comparativo-tests\conan\` (mesmo padrão do Celery/Scrapy).
 - [ ] Remover `toposort` do escopo do Dask, depois medir (clone humano já pronto em `dask\human_original\`, sem venv ainda).
-- [ ] Gerar material de apresentação + descrição em pt-BR do Scrapy em `comparativo-tests\scrapy\` (mesmo padrão do Celery).
 - [ ] Montar o material de apresentação final com os 5 repositórios.
