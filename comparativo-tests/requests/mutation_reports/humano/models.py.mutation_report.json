@@ -1,0 +1,100 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\requests\\human_original\\src\\requests\\models.py",
+  "total_sites_no_arquivo": 370,
+  "mutantes_gerados": 15,
+  "mortos": 13,
+  "vivos": 2,
+  "escore_mutacao_pct": 86.7,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 105: AOR Mult -> Div",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 24,
+      "description": "linha 586: IOR IsNot -> Is",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 49,
+      "description": "linha 958: IOR IsNot -> Is",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 74,
+      "description": "linha 105: SDL remove AnnAssign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 98,
+      "description": "linha 739: SDL remove AnnAssign -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 123,
+      "description": "linha 252: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 148,
+      "description": "linha 418: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 172,
+      "description": "linha 538: SDL remove AugAssign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 197,
+      "description": "linha 814: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 222,
+      "description": "linha 1138: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 246,
+      "description": "linha 509: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 271,
+      "description": "linha 869: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 296,
+      "description": "linha 234: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 320,
+      "description": "linha 683: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 345,
+      "description": "linha 605: SDL remove Assign -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    }
+  ]
+}

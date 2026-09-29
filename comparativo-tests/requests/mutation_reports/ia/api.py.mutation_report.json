@@ -1,0 +1,64 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\repositorios-originais\\requests\\requests\\api.py",
+  "total_sites_no_arquivo": 9,
+  "mutantes_gerados": 9,
+  "mortos": 8,
+  "vivos": 1,
+  "escore_mutacao_pct": 88.9,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 87: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 99: SDL remove Return -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 2,
+      "description": "linha 113: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 114: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 4,
+      "description": "linha 134: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 5,
+      "description": "linha 151: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 6,
+      "description": "linha 168: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 7,
+      "description": "linha 180: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 8,
+      "description": "linha 71: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

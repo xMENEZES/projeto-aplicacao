@@ -6,6 +6,13 @@ Cada teste está rotulado com o ID de caso (CTxx) do plano. Este arquivo
 reaproveita o conftest.py da pasta-mãe (sys.path para repositorios-originais/requests/, fixture
 live_server) -- pytest resolve conftest.py hierarquicamente, então nada
 precisa ser duplicado aqui.
+
+ATUALIZAÇÃO: a seção 1 (prepare_url) e a parte de HTTPBasicAuth da seção 6
+foram reescritas para passar pela via pública `Request(...).prepare()` /
+`auth=`, nunca chamando `PreparedRequest.prepare_url()` ou instanciando
+`HTTPBasicAuth` isolado -- é assim que o próprio Requests e qualquer
+consumidor real exercitam esses pontos, e é o único jeito de ter um
+correspondente humano possível na comparação.
 """
 
 from __future__ import annotations
@@ -14,63 +21,56 @@ import warnings
 
 import pytest
 
-from requests.auth import HTTPBasicAuth, HTTPDigestAuth
+from requests.auth import HTTPDigestAuth
 from requests.exceptions import HTTPError, InvalidURL, MissingSchema
-from requests.models import PreparedRequest, Response
+from requests.models import Request, Response
 
 
 # ==========================================================================
-# Seção 1 do plano — PreparedRequest.prepare_url
+# Seção 1 do plano — PreparedRequest.prepare_url, via Request(...).prepare()
 # ==========================================================================
 
 
 def test_ct01_esquema_ausente_e_classe_invalida():
     """CT01 — classe inválida: esquema ausente."""
-    p = PreparedRequest()
     with pytest.raises(MissingSchema):
-        p.prepare_url("example.com/x", None)
+        Request("GET", "example.com/x").prepare()
 
 
 def test_ct02_host_ausente_e_classe_invalida():
     """CT02 — classe inválida: host ausente."""
-    p = PreparedRequest()
     with pytest.raises(InvalidURL):
-        p.prepare_url("http://", None)
+        Request("GET", "http://").prepare()
 
 
 def test_ct03_host_com_wildcard_e_classe_invalida():
     """CT03 — classe inválida: host começa com '*'."""
-    p = PreparedRequest()
     with pytest.raises(InvalidURL):
-        p.prepare_url("http://*.x.com/", None)
+        Request("GET", "http://*.x.com/").prepare()
 
 
 def test_ct04_host_nao_ascii_codificavel_e_classe_valida():
     """CT04 — classe válida: host não-ASCII, mas codificável via IDNA."""
-    p = PreparedRequest()
-    p.prepare_url("http://café.com/", None)  # não deve levantar
+    p = Request("GET", "http://café.com/").prepare()  # não deve levantar
     assert p.url is not None
     assert "xn--" in p.url  # IDNA-encoded
 
 
 def test_ct05_esquema_nao_http_e_passthrough_valido():
     """CT05 — classe válida: esquema não-HTTP passa direto (mailto:)."""
-    p = PreparedRequest()
-    p.prepare_url("mailto:a@b.com", None)
+    p = Request("GET", "mailto:a@b.com").prepare()
     assert p.url == "mailto:a@b.com"
 
 
 def test_ct06_espacos_a_esquerda_sao_removidos_classe_valida():
     """CT06 — classe válida: espaços à esquerda são removidos antes do parsing."""
-    p = PreparedRequest()
-    p.prepare_url("   http://x.com/", None)
+    p = Request("GET", "   http://x.com/").prepare()
     assert p.url == "http://x.com/"
 
 
 def test_ct07_tipo_bytes_e_classe_valida_de_entrada():
     """CT07 — classe válida: url como bytes é decodificado (UTF-8) e processado."""
-    p = PreparedRequest()
-    p.prepare_url(b"http://x.com/", None)
+    p = Request("GET", b"http://x.com/").prepare()
     assert p.url == "http://x.com/"
 
 
@@ -114,13 +114,15 @@ def test_raise_for_status_valor_limite(id_caso, status_code, deve_levantar, trec
 
 
 def test_ct31_username_nao_string_e_classe_limitrofe_aceita_com_aviso():
-    """CT31 — classe limítrofe: username int, funciona mas emite DeprecationWarning."""
-    auth = HTTPBasicAuth(123, "senha")
-    p = PreparedRequest()
-    p.prepare(method="GET", url="http://example.com/")
+    """CT31 — classe limítrofe: username int, funciona mas emite DeprecationWarning.
+
+    Passado via `auth=(123, "senha")` (tupla), não instanciando HTTPBasicAuth
+    direto -- é assim que o par (usuário, senha) chega nessa classe em uso
+    real, e o Requests converte a tupla internamente em prepare_auth().
+    """
     with pytest.warns(DeprecationWarning):
-        resultado = auth(p)
-    assert resultado.headers["Authorization"].startswith("Basic ")
+        p = Request("GET", "http://example.com/", auth=(123, "senha")).prepare()
+    assert p.headers["Authorization"].startswith("Basic ")
 
 
 def test_ct32_qop_auth_int_e_classe_invalida_nao_suportada():

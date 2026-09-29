@@ -163,6 +163,22 @@ class _Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return
 
+        if path == "/redirect-307-temporary":
+            self._read_body()
+            self.send_response(307)
+            self.send_header("Location", "/echo")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+
+        if path == "/redirect-308-permanent-preserva":
+            self._read_body()
+            self.send_response(308)
+            self.send_header("Location", "/echo")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+
         if path == "/redirect-cross-host":
             self._read_body()
             # redireciona para outra "origem" (porta diferente simulada por host distinto)

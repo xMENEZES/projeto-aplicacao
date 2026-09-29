@@ -1,0 +1,107 @@
+COMPARAÇÃO DE TESTES — REQUESTS (testes escritos por IA vs. testes humanos originais)
+=====================================================================================
+
+O QUE FOI COMPARADO
+--------------------
+Oito arquivos do código-fonte do Requests (versão 2.34.2):
+
+1. requests/models.py               -> classes PreparedRequest, Response
+2. requests/sessions.py             -> classe Session (SessionRedirectMixin)
+3. requests/adapters.py             -> classe HTTPAdapter
+4. requests/auth.py                 -> classes HTTPBasicAuth, HTTPDigestAuth
+5. requests/cookies.py              -> classe RequestsCookieJar e funções de cookie
+6. requests/hooks.py                -> hooks de resposta definidos pelo usuário
+7. requests/structures.py           -> classe CaseInsensitiveDict
+8. requests/api.py                  -> funções públicas get/post/put/... (API de alto nível)
+
+AJUSTE FEITO ANTES DE MEDIR (Etapa 2 da comparação)
+------------------------------------------------------
+No mapeamento inicial (IA x Humano), 9 pontos testados pela IA não tinham
+correspondente possível na suíte humana, ou só tinham testando de um jeito
+diferente do que o próprio Requests/a suíte humana usa. Ajustes feitos:
+- REMOVIDOS (sem par humano possível em nenhum nível): prepare_content_length,
+  merge_setting, merge_hooks, BaseAdapter, HTTPProxyAuth.
+- REESCRITOS (mesma funcionalidade, nível de abstração igual ao humano):
+  prepare_url/prepare_body passaram a ser testados via Request(...).prepare()
+  (nunca chamando os métodos internos isolados); rebuild_method passou a ser
+  testado via redirecionamentos reais contra um servidor HTTP local (nunca
+  chamando Session.rebuild_method(p, r) isolado com objetos fabricados -- a
+  suíte humana também nunca faz isso, só observa o método final da requisição
+  depois do redirect); HTTPBasicAuth passou a ser testado via
+  requests.get(url, auth=(user, pass)) (tupla), não por instanciação direta.
+
+COMO OS TESTES FORAM GERADOS
+------------------------------
+- A suíte de IA foi escrita olhando SOMENTE o código de produção do Requests
+  (nunca leu os testes humanos), usando as técnicas de teste de software
+  (classes de equivalência, valor limite, tabela de decisão, cobertura
+  estrutural) da skill "gerador-de-testes".
+- A suíte humana é a suíte de testes que já vem no próprio repositório do
+  Requests no GitHub (pasta tests/), escrita pelos mantenedores do projeto.
+- As duas suítes rodam contra o MESMO código-fonte (mesma versão, 2.34.2) --
+  uma cópia local para a suíte de IA, um clone separado do repositório oficial
+  para a suíte humana.
+- A suíte de IA sobe um servidor HTTP local (só HTML, sem precisar de
+  internet) para os testes de integração/aceitação/funcionais; a suíte humana
+  usa a mesma infraestrutura de testes que o próprio Requests já mantém
+  (pytest-httpbin).
+
+COMO A COBERTURA FOI MEDIDA
+------------------------------
+Ferramenta: pytest + coverage.py (via plugin pytest-cov).
+Comando (mesma ideia dos dois lados, só troca a suíte de teste):
+
+    pytest <arquivos de teste> --cov=requests --cov-branch --cov-report=html
+
+Isso gera um relatório HTML (pastas cov_ia/ e cov_humano/ nesta mesma pasta)
+mostrando, por arquivo, duas métricas: cobertura de LINHA e cobertura de
+BRANCH (desvio). Branch é a métrica mais importante das duas -- ver descrição
+completa no documento equivalente do Celery, o raciocínio é o mesmo.
+
+COMO A MUTAÇÃO FOI MEDIDA
+----------------------------
+Mesmo processo do Celery/Scrapy: um script próprio (mutation_test.py,
+biblioteca padrão do Python, sem depender do mutmut que não roda no Windows)
+troca um operador de cada vez no código de produção (relacional, identidade,
+associação, aritmético, lógico ou remoção de comando) e roda a suíte de
+testes. Se algum teste falhar, o "mutante" morreu (bom sinal); se todos
+passarem mesmo com o código alterado, o mutante sobreviveu (sinal de que
+aquele trecho não é bem testado).
+
+Particularidade do Requests: 5 dos 8 arquivos (models.py, sessions.py,
+adapters.py, auth.py, cookies.py) têm entre 150 e 370 pontos mutáveis cada, e
+a suíte humana do Requests é bem mais lenta que a de Celery/Scrapy (~72s por
+execução completa, por causa de testes reais de timeout/proxy/TLS). Rodar os
+40 mutantes padrão nesses 5 arquivos custaria horas a mais sem ganho
+proporcional de rigor estatístico -- por isso o corte foi reduzido para 15
+mutantes nesses 5 (sorteados de forma uniforme ao longo de todo o arquivo,
+não só do começo), mantendo os 40 (sem corte real, já que os arquivos têm
+menos pontos que isso) para hooks.py/structures.py/api.py. O mesmo corte foi
+aplicado nos dois lados, para garantir que os MESMOS pontos de mutação fossem
+sorteados e comparados nas duas suítes.
+
+RESULTADO FINAL
+-----------------
+                                Cobertura Linha    Cobertura Branch    Escore de Mutação
+Arquivo                        IA      Humano      IA      Humano      IA        Humano
+models.py (PreparedRequest)    75%     92%         60%     89%         60,0%     86,7%
+sessions.py (Session)          90%     95%         76%     92%         46,7%     73,3%
+adapters.py (HTTPAdapter)      74%     87%         49%     82%         33,3%     66,7%
+auth.py (Basic/DigestAuth)     83%     87%         56%     62%         46,7%     33,3%
+cookies.py (RequestsCookieJar) 76%     79%         57%     56%         53,3%     66,7%
+hooks.py                       100%    100%        100%    100%        100,0%    100,0%
+structures.py (CaseInsensitiveDict) 92% 98%        67%     83%         60,0%     76,7%
+api.py (get/post/put/...)      96%     86%         --      --          88,9%     55,6%
+
+CONCLUSÃO
+-----------
+Dos 8 arquivos, a suíte humana venceu o escore de mutação em 5 (models.py,
+sessions.py, adapters.py, cookies.py, structures.py), a IA venceu em 2
+(auth.py, api.py) e empatou em 1 (hooks.py, 100% em ambos). O padrão já visto
+no Celery e no Scrapy se repete: mesmo quando a IA cobre mais linhas/branches
+de código (ex.: sessions.py), a suíte humana mata proporcionalmente mais
+mutantes -- testa com mais intenção cada decisão do código. Por outro lado,
+o Requests também mostra o padrão inverso: em unidades pequenas e
+autocontidas (auth.py, api.py), a suíte de IA, gerada com foco explícito em
+classes de equivalência e casos de borda, iguala ou supera décadas de teste
+de regressão humano.

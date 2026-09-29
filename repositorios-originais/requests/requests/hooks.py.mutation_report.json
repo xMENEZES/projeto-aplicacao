@@ -1,0 +1,70 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\repositorios-originais\\requests\\requests\\hooks.py",
+  "total_sites_no_arquivo": 10,
+  "mutantes_gerados": 10,
+  "mortos": 10,
+  "vivos": 0,
+  "escore_mutacao_pct": 100.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 39: COR Or -> And",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 1,
+      "description": "linha 46: IOR IsNot -> Is",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 22: SDL remove AnnAssign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 3,
+      "description": "linha 26: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 4,
+      "description": "linha 39: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=3221226505"
+    },
+    {
+      "index": 5,
+      "description": "linha 40: SDL remove AnnAssign -> pass",
+      "survived": false,
+      "reason": "exit=3221226505"
+    },
+    {
+      "index": 6,
+      "description": "linha 48: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 7,
+      "description": "linha 43: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 8,
+      "description": "linha 45: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=3221226505"
+    },
+    {
+      "index": 9,
+      "description": "linha 47: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}
