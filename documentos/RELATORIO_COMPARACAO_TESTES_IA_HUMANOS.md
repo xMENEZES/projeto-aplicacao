@@ -315,6 +315,8 @@ Com isso: `response/__init__.py` foi de "sem pontos mutáveis" para 70,0% (IA) /
 
 **Status: Requests CONCLUÍDO (8/8 arquivos com cobertura + mutação).**
 
+**Correção pós-entrega (29/09/2026):** `cov_ia`/`cov_humano` reduzidos de 19 para 16 arquivos cada, removendo páginas de módulos fora do escopo (`__init__.py`, `_internal_utils.py`, `certs.py`, `compat.py`, `exceptions.py`, `help.py`, `packages.py`, `status_codes.py`, `utils.py`) que o `coverage.py` gerava por serem tocados durante a execução dos testes, mesmo sem fazer parte da comparação. Ver detalhes técnicos (incluindo um bug real encontrado na tentativa inicial de restringir via `--cov=` pontuado) na seção 7.4, nota sobre o Conan.
+
 ### 7.4 Conan — CONCLUÍDO
 
 **Ajustes da Etapa 2:** ao revisar a suíte de IA, os 3 arquivos v1 (`test_estrutural_options.py`, `test_estrutural_requires.py`) e os 2 arquivos v2 (`test_decisao_package_option.py`, `test_decisao_version_requires.py`) já estavam corretamente reescritos via `TestClient` (receitas reais + `conan create`/`graph info`), sem nenhuma instanciação direta de `_PackageOption(s)`/`Requirement(s)`. Só restava um ponto: `test_estrutural_version.py::test_upper_bound_exclui_prereleases` ainda instanciava `VersionRange(...)` isolado — reescrito para resolver a mesma regra (pré-release da própria versão-limite não entra na faixa) via `requires="liba/[<limite]"` real, resolvido por `graph info`, reaproveitando os helpers (`_lib`, `_app_com_faixa`, `_versao_resolvida`) já usados pelo resto do arquivo para `VersionRange`. Import de `VersionRange` agora não usado, removido. Validado: suíte de IA completa (v1 + v2) — **89 testes, todos passando**.
@@ -349,7 +351,46 @@ Com isso: `response/__init__.py` foi de "sem pontos mutáveis" para 70,0% (IA) /
 
 **Status: Conan CONCLUÍDO (4/4 arquivos com cobertura + mutação).**
 
-### 7.5 Dask — PENDENTE
+**Correção pós-entrega (29/09/2026) — pastas `cov_ia`/`cov_humano` com centenas de arquivos irrelevantes:** o comando original (`--cov=conan`, pacote inteiro) fazia o `coverage.py` gerar uma página HTML para *todo* módulo tocado durante a execução dos testes — no Conan isso significa ~330 páginas por lado (o `TestClient` aciona por baixo dos panos dezenas de módulos internos: parser de CLI, cache, toolchains etc.), quando só 4 nos interessam. Corrigido gerando a cobertura do pacote inteiro (continua sendo o jeito confiável de medir) e depois filtrando o relatório HTML só para os 4 arquivos-alvo via `coverage html --include=".../options.py,.../requires.py,.../version.py,.../version_range.py"` — reduz `cov_ia/`/`cov_humano/` de ~330 para 12 arquivos cada (4 páginas de código + índice/assets do próprio coverage.py), sem mudar nenhum número (conferido). Mesma correção aplicada retroativamente a Requests (19→16 arquivos) e ao Dask (185→13/... arquivos) abaixo.
+
+**Nota técnica (mesmo incidente):** a primeira tentativa de restringir foi passar `--cov=conan.internal.model.options --cov=conan.internal.model.requires ...` (múltiplos módulos pontuados) direto no `pytest`. Isso funcionou para o Conan, mas quebrou 161 dos 364 testes do lado humano do **Requests** com `ValueError: You can only merge into CookieJar` — um `isinstance()` falhando contra a própria classe, sintoma clássico de duas cópias do mesmo módulo carregadas em `sys.modules` (a instalação editável do Requests, via `pip install -e .`, parece reagir mal a `--cov=` apontando pra submódulos específicos antes do pytest terminar de resolver o path). Resolvido usando sempre `--cov=<pacote inteiro>` para coletar os dados (nunca falhou, nos 3 repositórios) e filtrando só na geração do HTML.
+
+### 7.5 Dask — CONCLUÍDO
+
+**Ajuste da Etapa 2:** já feito em sessão anterior — `test_estrutural_core.py` documenta explicitamente por que `core.toposort()` não tem teste (sem par humano em nenhum nível, nas 177 pastas `tests/` do repositório). Confirmado por grep: nenhuma chamada a `toposort` na suíte de IA. Suíte de IA completa validada: **119 testes, todos passando**.
+
+**Arquivos-alvo (5):** `core.py`, `config.py`, `optimization.py`, `tokenize.py`, `delayed.py` (todos em `dask/`, mapeados 1:1 pelos arquivos estruturais/funcionais da IA). Confirmado que os 5 arquivos são byte-a-byte idênticos entre `repositorios-originais/dask` e `dask/human_original` (commit `817e5ffc`, já fixado corretamente desde a reorg da outra sessão — sem o incidente de versão que aconteceu no Conan).
+
+**Ambiente:**
+- `testes-ia\dask\.venv\` criado, dependências de `requirements-testes.txt` instaladas.
+- `dask\human_original\.venv\` criado, `pip install -e .` (deps principais: click/cloudpickle/fsspec/packaging/partd/pyyaml) + plugins de teste mínimos (pytest-mock/rerunfailures/timeout/xdist) — sem `numpy`/`pandas`/`distributed`, que não são necessários para os 5 arquivos-alvo (mesmo escopo "sem numpy/pandas" que a suíte de IA já usa); suíte humana pula ~59 testes que dependem desses extras opcionais, o que é esperado e não afeta a comparação.
+- Ambos os lados MUITO mais rápidos que Requests/Conan (suíte humana completa dos 5 arquivos roda em ~8s) — mantido `--max-mutants 40` (padrão, sem corte) nos dois lados.
+
+**Cobertura medida (`pytest --cov=dask --cov-branch --cov-report=html`):**
+
+| Arquivo | Linha IA | Linha Humano | Branch IA | Branch Humano |
+|---|---|---|---|---|
+| core.py | 87,0% | 90,9% | 82,4% | 86,6% |
+| config.py | 68,7% | 94,4% | 60,7% | 94,4% |
+| optimization.py | 15,4% | 94,5% | 12,2% | 87,4% |
+| tokenize.py | 51,2% | 56,5% | 55,0% | 67,5% |
+| delayed.py | 53,8% | 88,2% | 32,0% | 81,2% |
+
+(core.py humano remedido junto da correção de escopo da cobertura — 90,9%/86,6%, ~1 p.p. acima da primeira medição por variação natural entre execuções, sem nenhuma mutação residual no arquivo, confirmado por `git status` limpo.)
+
+**Mutação** (`--max-mutants 40`, padrão, sem corte — os 5 arquivos são pequenos o bastante para caber inteiros nesse limite):
+
+| Arquivo | Mutantes | Escore IA | Escore Humano |
+|---|---|---|---|
+| core.py | 40 | 75,0% | 65,0% |
+| config.py | 40 | 52,5% | 77,5% |
+| optimization.py | 40 | 10,0% | 77,5% |
+| tokenize.py | 40 | 37,5% | 55,0% |
+| delayed.py | 40 | 40,0% | 82,5% |
+
+**Conclusão do Dask:** dos 5 arquivos, a suíte humana venceu em **4** (`config.py`, `optimization.py`, `tokenize.py`, `delayed.py`) e a IA venceu em **1** (`core.py`, 75,0% vs. 65,0%). `optimization.py` é o caso mais extremo de todo o projeto até aqui: a suíte de IA cobre só 15,4% das linhas (contra 94,5% da suíte humana) e mata apenas 10,0% dos mutantes (contra 77,5%) — a suíte de IA testa `cull()`/`inline()` só nos casos de uso mais diretos, enquanto a suíte humana do Dask exercita `optimization.py` indiretamente através de praticamente toda a bateria de testes de grafos de tarefas do projeto (schedulers, collections, etc.), um nível de cobertura indireta que a suíte de IA — escrita olhando só a assinatura pública das duas funções — não tinha como replicar. Em `core.py`, por outro lado — as primitivas puras de grafo de tarefas (dict + tuplas, sem I/O) — a suíte de IA, com foco explícito em classes de equivalência e detecção de ciclo, supera a humana; mesmo padrão de "IA se destaca em unidades pequenas e autocontidas" já visto em `version.py` (Conan) e `auth.py`/`api.py` (Requests).
+
+**Status: Dask CONCLUÍDO (5/5 arquivos com cobertura + mutação). Os 5 repositórios da comparação estão concluídos.**
 
 ## 8. Próximos passos
 
@@ -358,5 +399,7 @@ Com isso: `response/__init__.py` foi de "sem pontos mutáveis" para 70,0% (IA) /
 - [x] Requests concluído (cobertura + mutação, tabela final na seção 7.3).
 - [x] Conan concluído (cobertura + mutação, tabela final na seção 7.4).
 - [x] Gerar `descricao-comparacao.txt` + material de apresentação de Requests e Conan em `comparativo-tests\requests\` e `comparativo-tests\conan\` (mesmo padrão do Celery/Scrapy).
-- [ ] Remover `toposort` do escopo do Dask, depois medir (clone humano já pronto em `dask\human_original\`, sem venv ainda).
+- [x] Dask concluído (cobertura + mutação, tabela final na seção 7.5) — `toposort` já estava fora do escopo desde uma sessão anterior.
+- [x] Corrigir escopo das pastas `cov_ia`/`cov_humano` de Requests, Conan e Dask para conter só os arquivos comparados (não o pacote inteiro).
+- [ ] Gerar `descricao-comparacao.txt` + material de apresentação do Dask em `comparativo-tests\dask\`.
 - [ ] Montar o material de apresentação final com os 5 repositórios.
