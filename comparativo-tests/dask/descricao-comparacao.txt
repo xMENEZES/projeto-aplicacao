@@ -1,0 +1,97 @@
+COMPARAÇÃO DE TESTES — DASK (testes escritos por IA vs. testes humanos originais)
+==================================================================================
+
+O QUE FOI COMPARADO
+--------------------
+Cinco arquivos do código-fonte do Dask (commit 817e5ffc):
+
+1. dask/core.py           -> primitivas puras de grafo de tarefas (get_dependencies,
+                              subs, getcycle/isdag, etc.)
+2. dask/config.py         -> configuração em camadas (default < YAML < variável de
+                              ambiente < dask.config.set())
+3. dask/optimization.py   -> cull() (remove tarefas não alcançáveis) e inline()
+                              (substitui uma tarefa pelo próprio valor)
+4. dask/tokenize.py       -> hashing determinístico usado para cache/identidade
+5. dask/delayed.py        -> API pública dask.delayed (laziness, encadeamento,
+                              compute)
+
+AJUSTE FEITO ANTES DE MEDIR (Etapa 2 da comparação)
+------------------------------------------------------
+No mapeamento inicial (IA x Humano), 22 unidades testadas pela IA foram
+verificadas e apenas 1 não tinha correspondente humano possível em nenhum
+nível: core.toposort(). Nenhuma das 177 pastas tests/ do repositório
+exercita essa função, direta ou indiretamente -- por isso ela nunca teve
+teste na suíte de IA (removida já numa sessão anterior a esta etapa de
+medição). Os outros 8 casos de core.py permaneceram válidos sem mudança.
+
+COMO OS TESTES FORAM GERADOS
+------------------------------
+- A suíte de IA foi escrita olhando SOMENTE o código de produção do Dask
+  (nunca leu os testes humanos), usando as técnicas de teste de software
+  (classes de equivalência, valor limite, tabela de decisão) da skill
+  "gerador-de-testes". Três dos arquivos (delayed, integração de scheduler,
+  aceitação) foram reescritos do zero numa sessão anterior por precaução,
+  depois de um incidente em que o pytest chegou a coletar por alguns
+  segundos a suíte humana antes de ser interrompido -- para eliminar
+  qualquer resíduo, mesmo sem evidência de que algo tivesse vazado.
+- A suíte humana é a suíte de testes que já vem no próprio repositório do
+  Dask no GitHub (pasta dask/tests/), escrita pelos mantenedores do
+  projeto -- mapeamento 1:1 com os 5 arquivos-alvo (dask/tests/test_core.py,
+  test_config.py, test_optimization.py, test_tokenize.py, test_delayed.py).
+- As duas suítes rodam contra o MESMO commit exato (817e5ffc) -- confirmado
+  byte a byte nos 5 arquivos-alvo entre a cópia local usada pela suíte de
+  IA e o clone humano.
+- Escopo deliberadamente "sem numpy/pandas": os 5 arquivos-alvo são o
+  núcleo puro-Python do motor de grafos do Dask, sem depender de
+  dask.array/dask.dataframe/distributed. O ambiente humano roda sem esses
+  pacotes extras instalados -- a suíte humana pula ~59 testes que dependem
+  deles (esperado e sem efeito na comparação, já que também não fazem
+  parte do escopo da suíte de IA).
+
+COMO A COBERTURA FOI MEDIDA
+------------------------------
+Ferramenta: pytest + coverage.py (via plugin pytest-cov).
+Cobertura coletada contra o pacote inteiro (`--cov=dask --cov-branch`, a
+forma confiável de medir) e o relatório HTML depois filtrado só para os 5
+arquivos-alvo (`coverage html --include=...`) -- sem isso, o relatório
+teria ~185 páginas por lado, já que só importar `dask` aciona dezenas de
+outros submódulos (array, dataframe, bag, etc.) que não fazem parte desta
+comparação.
+
+COMO A MUTAÇÃO FOI MEDIDA
+----------------------------
+Mesmo processo do Celery/Scrapy/Requests/Conan: um script próprio
+(mutation_test.py) troca um operador de cada vez no código de produção e
+roda a suíte de testes. Se algum teste falhar, o mutante morreu (bom
+sinal); se todos passarem, o mutante sobreviveu (sinal de teste fraco
+naquele trecho). Os dois lados do Dask são muito mais rápidos que os
+demais repositórios (suíte humana completa dos 5 arquivos roda em ~8s),
+então o corte de 40 mutantes por arquivo (padrão da ferramenta) foi
+mantido sem redução em nenhum dos dois lados.
+
+RESULTADO FINAL
+-----------------
+                              Cobertura Linha    Cobertura Branch    Escore de Mutação
+Arquivo                      IA      Humano      IA      Humano      IA        Humano
+core.py                      87%     91%         82%     87%         75,0%     65,0%
+config.py                    69%     94%         61%     94%         52,5%     77,5%
+optimization.py               15%     95%         12%     87%         10,0%     77,5%
+tokenize.py                  51%     57%         55%     68%         37,5%     55,0%
+delayed.py                   54%     88%         32%     81%         40,0%     82,5%
+
+CONCLUSÃO
+-----------
+Dos 5 arquivos, a suíte humana venceu o escore de mutação em 4 (config.py,
+optimization.py, tokenize.py, delayed.py) e a IA venceu em 1 (core.py).
+optimization.py é o caso mais extremo do projeto inteiro: a suíte de IA
+cobre só 15% das linhas (contra 95% da humana) e mata apenas 10% dos
+mutantes (contra 77,5%) -- ela testa cull()/inline() só nos casos de uso
+mais diretos, enquanto a suíte humana do Dask exercita esse arquivo
+indiretamente através de praticamente toda a bateria de testes de grafos
+de tarefas do projeto (schedulers, collections etc.), um nível de
+cobertura indireta que uma suíte escrita olhando só a assinatura pública
+das duas funções não tinha como replicar. Já em core.py -- as primitivas
+puras de grafo de tarefas, sem I/O -- a suíte de IA, com foco explícito em
+classes de equivalência e detecção de ciclo, supera a suíte humana --
+mesmo padrão de "IA se destaca em unidades pequenas e autocontidas" já
+visto em version.py (Conan) e auth.py/api.py (Requests).

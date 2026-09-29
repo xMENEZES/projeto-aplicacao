@@ -1,0 +1,250 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\dask\\human_original\\dask\\optimization.py",
+  "total_sites_no_arquivo": 414,
+  "mutantes_gerados": 40,
+  "mortos": 31,
+  "vivos": 9,
+  "escore_mutacao_pct": 77.5,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 62: MOR NotIn -> In",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 10,
+      "description": "linha 149: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 20,
+      "description": "linha 194: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 31,
+      "description": "linha 278: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 41,
+      "description": "linha 398: MOR In -> NotIn",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 51,
+      "description": "linha 527: IOR IsNot -> Is",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 62,
+      "description": "linha 547: IOR Is -> IsNot",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 72,
+      "description": "linha 566: IOR Is -> IsNot",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 82,
+      "description": "linha 595: ROR NotEq -> Lt",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 93,
+      "description": "linha 673: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 103,
+      "description": "linha 735: AOR Sub -> Mult",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 113,
+      "description": "linha 790: AOR Sub -> Mult",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 124,
+      "description": "linha 804: COR And -> Or",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 134,
+      "description": "linha 455: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=4"
+    },
+    {
+      "index": 144,
+      "description": "linha 161: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 155,
+      "description": "linha 298: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 165,
+      "description": "linha 393: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 175,
+      "description": "linha 601: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 186,
+      "description": "linha 614: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 196,
+      "description": "linha 140: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 207,
+      "description": "linha 233: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 217,
+      "description": "linha 374: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "timeout (arvore de processos finalizada; tratado como morto)"
+    },
+    {
+      "index": 227,
+      "description": "linha 434: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 238,
+      "description": "linha 543: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 248,
+      "description": "linha 581: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 258,
+      "description": "linha 80: SDL remove Expr -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 269,
+      "description": "linha 183: SDL remove Assign -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 279,
+      "description": "linha 208: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 289,
+      "description": "linha 424: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 300,
+      "description": "linha 593: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 310,
+      "description": "linha 227: SDL remove Delete -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 320,
+      "description": "linha 634: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "timeout (arvore de processos finalizada; tratado como morto)"
+    },
+    {
+      "index": 331,
+      "description": "linha 886: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 341,
+      "description": "linha 631: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "timeout (arvore de processos finalizada; tratado como morto)"
+    },
+    {
+      "index": 351,
+      "description": "linha 756: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 362,
+      "description": "linha 155: SDL remove Expr -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 372,
+      "description": "linha 777: SDL remove AugAssign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 382,
+      "description": "linha 157: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 393,
+      "description": "linha 819: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 403,
+      "description": "linha 852: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "timeout (arvore de processos finalizada; tratado como morto)"
+    }
+  ]
+}

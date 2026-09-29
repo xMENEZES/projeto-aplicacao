@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparação de Testes — Dask</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --ink: #1f2430;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --ia: #6366f1;
+    --humano: #059669;
+    --accent: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 24px 96px; }
+  header { margin-bottom: 40px; }
+  header .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  h1 { font-size: 32px; margin: 6px 0 8px; }
+  header p.sub { color: var(--muted); font-size: 15px; margin: 0; }
+
+  section { margin-bottom: 48px; }
+  h2 {
+    font-size: 20px;
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .metodologia-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .metodologia-grid .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .metodologia-grid .card .num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .metodologia-grid .card h3 { margin: 0 0 8px; font-size: 15px; }
+  .metodologia-grid .card p { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 12.5px;
+  }
+  th, td { padding: 9px 10px; text-align: center; border-bottom: 1px solid var(--line); }
+  th { background: #fafaf9; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+  td:first-child, th:first-child { text-align: left; font-weight: 600; }
+  tbody tr:last-child td { border-bottom: none; }
+  .ia-col { color: var(--ia); font-weight: 700; }
+  .humano-col { color: var(--humano); font-weight: 700; }
+  .na { color: var(--muted); font-style: italic; font-weight: 400; }
+
+  .legend { display: flex; gap: 20px; align-items: center; margin: 14px 0 20px; font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot.ia { background: var(--ia); }
+  .dot.humano { background: var(--humano); }
+
+  .barchart .row { margin-bottom: 14px; }
+  .barchart .row .label { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+  .bar-track { background: #edeef0; border-radius: 6px; height: 17px; position: relative; overflow: hidden; margin-bottom: 4px; }
+  .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 10.5px; color: white; font-weight: 700; white-space: nowrap; }
+  .bar-fill.ia { background: var(--ia); }
+  .bar-fill.humano { background: var(--humano); }
+
+  .scoreboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 16px 0 8px;
+  }
+  .scoreboard .box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .scoreboard .box .n { font-size: 28px; font-weight: 800; }
+  .scoreboard .box .l { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .scoreboard .box.humano .n { color: var(--humano); }
+  .scoreboard .box.empate .n { color: var(--accent); }
+  .scoreboard .box.ia .n { color: var(--ia); }
+
+  .conclusao {
+    background: #fff8ec;
+    border: 1px solid #f3d999;
+    border-radius: 10px;
+    padding: 20px 22px;
+    font-size: 14.5px;
+  }
+  .conclusao strong { color: #92620a; }
+
+  footer { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+  @media (max-width: 640px) {
+    .metodologia-grid, .scoreboard { grid-template-columns: 1fr; }
+    table { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Faculdade · Engenharia de Qualidade e Teste de Software</div>
+    <h1>Testes de IA vs. Testes Humanos — Dask</h1>
+    <p class="sub">Comparação de cobertura e teste de mutação em 5 arquivos do núcleo puro-Python do Dask (commit 817e5ffc), entre uma suíte de testes escrita por IA (sem acesso aos testes originais) e a suíte de testes mantida pelos mantenedores do projeto.</p>
+  </header>
+
+  <section>
+    <h2>Metodologia</h2>
+    <div class="metodologia-grid">
+      <div class="card">
+        <div class="num">1 — Geração</div>
+        <h3>Suíte de IA independente</h3>
+        <p>Testes escritos olhando só o código de produção do Dask, sem numpy/pandas/distributed. Das 22 unidades verificadas, só core.toposort() não tinha par humano possível — removida antes desta etapa.</p>
+      </div>
+      <div class="card">
+        <div class="num">2 — Cobertura</div>
+        <h3>pytest + coverage.py</h3>
+        <p>Cada suíte rodou contra o mesmo commit exato (817e5ffc), medindo cobertura de linha e de branch nos 5 arquivos-alvo — os mais rápidos dos 5 repositórios (suíte humana completa roda em ~8s).</p>
+      </div>
+      <div class="card">
+        <div class="num">3 — Mutação</div>
+        <h3>Ferramenta própria</h3>
+        <p>Mesmo script usado nos outros 4 repositórios (ROR/IOR/MOR/AOR/COR/SDL). Sem corte de mutantes nos dois lados — os 5 arquivos rodam rápido o bastante para caber inteiros no limite padrão de 40.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Placar — escore de mutação (5 arquivos, ROR/IOR/MOR/AOR/COR/SDL)</h2>
+    <div class="scoreboard">
+      <div class="box humano"><div class="n">4</div><div class="l">arquivos onde o humano venceu</div></div>
+      <div class="box empate"><div class="n">0</div><div class="l">arquivos empatados</div></div>
+      <div class="box ia"><div class="n">1</div><div class="l">arquivo onde a IA venceu</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Resultado consolidado</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Arquivo</th>
+          <th class="ia-col">Linha IA</th>
+          <th class="humano-col">Linha Hum</th>
+          <th class="ia-col">Branch IA</th>
+          <th class="humano-col">Branch Hum</th>
+          <th class="ia-col">Mutação IA</th>
+          <th class="humano-col">Mutação Hum</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>core.py</td><td class="ia-col">87%</td><td class="humano-col">91%</td><td class="ia-col">82%</td><td class="humano-col">87%</td><td class="ia-col">75,0%</td><td class="humano-col">65,0%</td></tr>
+        <tr><td>config.py</td><td class="ia-col">69%</td><td class="humano-col">94%</td><td class="ia-col">61%</td><td class="humano-col">94%</td><td class="ia-col">52,5%</td><td class="humano-col">77,5%</td></tr>
+        <tr><td>optimization.py</td><td class="ia-col">15%</td><td class="humano-col">95%</td><td class="ia-col">12%</td><td class="humano-col">87%</td><td class="ia-col">10,0%</td><td class="humano-col">77,5%</td></tr>
+        <tr><td>tokenize.py</td><td class="ia-col">51%</td><td class="humano-col">57%</td><td class="ia-col">55%</td><td class="humano-col">68%</td><td class="ia-col">37,5%</td><td class="humano-col">55,0%</td></tr>
+        <tr><td>delayed.py</td><td class="ia-col">54%</td><td class="humano-col">88%</td><td class="ia-col">32%</td><td class="humano-col">81%</td><td class="ia-col">40,0%</td><td class="humano-col">82,5%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Escore de mutação, lado a lado (5 arquivos)</h2>
+    <div class="legend">
+      <span><span class="dot ia"></span> IA</span>
+      <span><span class="dot humano"></span> Humano</span>
+    </div>
+    <div class="barchart">
+      <div class="row"><div class="label">core.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:75%">75,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:65%">65,0%</div></div>
+      </div>
+      <div class="row"><div class="label">config.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:52.5%">52,5%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:77.5%">77,5%</div></div>
+      </div>
+      <div class="row"><div class="label">optimization.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:10%">10,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:77.5%">77,5%</div></div>
+      </div>
+      <div class="row"><div class="label">tokenize.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:37.5%">37,5%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:55%">55,0%</div></div>
+      </div>
+      <div class="row"><div class="label">delayed.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:40%">40,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:82.5%">82,5%</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Conclusão</h2>
+    <div class="conclusao">
+      Dos 5 arquivos, a suíte humana venceu em <strong>4</strong> (<code>config.py</code>, <code>optimization.py</code>,
+      <code>tokenize.py</code>, <code>delayed.py</code>) e a IA venceu em <strong>1</strong> (<code>core.py</code>).
+      <code>optimization.py</code> é o caso mais extremo do projeto inteiro: a suíte de IA cobre só 15% das linhas (contra 95% da
+      humana) e mata apenas 10% dos mutantes (contra 77,5%) — ela testa <code>cull()</code>/<code>inline()</code> só nos casos de uso
+      mais diretos, enquanto a suíte humana do Dask exercita esse arquivo indiretamente através de praticamente toda a bateria de
+      testes de grafos de tarefas do projeto. Já em <code>core.py</code> — as primitivas puras de grafo, sem I/O — a suíte de IA,
+      com foco explícito em classes de equivalência e detecção de ciclo, supera a humana — mesmo padrão de "IA se destaca em
+      unidades pequenas e autocontidas" já visto em <code>version.py</code> (Conan) e <code>auth.py</code>/<code>api.py</code> (Requests).
+    </div>
+  </section>
+
+  <footer>
+    Gerado a partir da comparação de testes IA vs. Humano — repositório Dask, commit 817e5ffc · dados completos em <code>descricao-comparacao.txt</code>, <code>cov_ia/</code>, <code>cov_humano/</code> e <code>mutation_reports/</code> nesta mesma pasta.
+  </footer>
+
+</div>
+</body>
+</html>
