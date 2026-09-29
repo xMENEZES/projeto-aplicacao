@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Cobertura de celery\utils\dispatch\signal.py: 45%</title>
+    <title>Cobertura de C:\claude\projeto-aplicacao\repositorios-originais\celery\celery\utils\dispatch\signal.py: 76%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_c827f16f.png">
     <link rel="stylesheet" href="style_cb_0853b3de.css" type="text/css">
     <script src="coverage_html_cb_c6c441fc.js" defer></script>
@@ -11,8 +11,8 @@
 <header>
     <div class="content">
         <h1>
-            <span class="text">Cobertura de </span><b>celery<span class="sep">\</span>utils<span class="sep">\</span>dispatch<span class="sep">\</span>signal.py</b>:
-            <span class="pc_cov">45%</span>
+            <span class="text">Cobertura de </span><b>C:<span class="sep">\</span>claude<span class="sep">\</span>projeto-aplicacao<span class="sep">\</span>repositorios-originais<span class="sep">\</span>celery<span class="sep">\</span>celery<span class="sep">\</span>utils<span class="sep">\</span>dispatch<span class="sep">\</span>signal.py</b>:
+            <span class="pc_cov">76%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -56,18 +56,18 @@
         </aside>
         <h2>
             <span class="text">29 instruções &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Alternar linhas executadas">11<span class="text"> executadas</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Alternar linhas faltando">18<span class="text"> faltando</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Alternar linhas executadas">22<span class="text"> executadas</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Alternar linhas faltando">7<span class="text"> faltando</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Alternar linhas excluídas">295<span class="text"> excluídas</span></button>
-            <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Alternar linhas parcialmente executadas">0<span class="text"> parciais</span></button>
+            <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Alternar linhas parcialmente executadas">1<span class="text"> parciais</span></button>
         </h2>
         <p class="text">
-            <a id="prevFileLink" class="nav" href="z_bca77cdafba7ef52_canvas_py.html">&#xab; anterior</a> &nbsp; &nbsp;
+            <a id="prevFileLink" class="nav" href="z_2c446c6286113091_canvas_py.html">&#xab; anterior</a> &nbsp; &nbsp;
             <a id="indexLink" class="nav" href="index.html">&Hat; índice</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="index.html">&#xbb; próximo</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            criado em 2026-09-29 10:02 -0300
+            criado em 2026-09-29 09:58 -0300
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -83,23 +83,23 @@
 </header>
 <main id="source">
     <p class="pln"><span class="n"><a id="t1" href="#t1">1</a></span><span class="t"><span class="str">&quot;&quot;&quot;Implementation of the Observer pattern.&quot;&quot;&quot;</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t2" href="#t2">2</a></span><span class="t"><span class="key">import</span> <span class="nam">sys</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t3" href="#t3">3</a></span><span class="t"><span class="key">import</span> <span class="nam">threading</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t4" href="#t4">4</a></span><span class="t"><span class="key">import</span> <span class="nam">warnings</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t5" href="#t5">5</a></span><span class="t"><span class="key">import</span> <span class="nam">weakref</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t"><span class="key">from</span> <span class="nam">weakref</span> <span class="key">import</span> <span class="nam">WeakMethod</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t2" href="#t2">2</a></span><span class="t"><span class="key">import</span> <span class="nam">sys</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t3" href="#t3">3</a></span><span class="t"><span class="key">import</span> <span class="nam">threading</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t4" href="#t4">4</a></span><span class="t"><span class="key">import</span> <span class="nam">warnings</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t5" href="#t5">5</a></span><span class="t"><span class="key">import</span> <span class="nam">weakref</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t"><span class="key">from</span> <span class="nam">weakref</span> <span class="key">import</span> <span class="nam">WeakMethod</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t7" href="#t7">7</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t8" href="#t8">8</a></span><span class="t"><span class="key">from</span> <span class="nam">kombu</span><span class="op">.</span><span class="nam">utils</span><span class="op">.</span><span class="nam">functional</span> <span class="key">import</span> <span class="nam">retry_over_time</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t8" href="#t8">8</a></span><span class="t"><span class="key">from</span> <span class="nam">kombu</span><span class="op">.</span><span class="nam">utils</span><span class="op">.</span><span class="nam">functional</span> <span class="key">import</span> <span class="nam">retry_over_time</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t9" href="#t9">9</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t10" href="#t10">10</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">exceptions</span> <span class="key">import</span> <span class="nam">CDeprecationWarning</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t11" href="#t11">11</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">local</span> <span class="key">import</span> <span class="nam">PromiseProxy</span><span class="op">,</span> <span class="nam">Proxy</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">utils</span><span class="op">.</span><span class="nam">functional</span> <span class="key">import</span> <span class="nam">fun_accepts_kwargs</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t13" href="#t13">13</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">utils</span><span class="op">.</span><span class="nam">log</span> <span class="key">import</span> <span class="nam">get_logger</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t14" href="#t14">14</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">utils</span><span class="op">.</span><span class="nam">time</span> <span class="key">import</span> <span class="nam">humanize_seconds</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t10" href="#t10">10</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">exceptions</span> <span class="key">import</span> <span class="nam">CDeprecationWarning</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t11" href="#t11">11</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">local</span> <span class="key">import</span> <span class="nam">PromiseProxy</span><span class="op">,</span> <span class="nam">Proxy</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">utils</span><span class="op">.</span><span class="nam">functional</span> <span class="key">import</span> <span class="nam">fun_accepts_kwargs</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t13" href="#t13">13</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">utils</span><span class="op">.</span><span class="nam">log</span> <span class="key">import</span> <span class="nam">get_logger</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t14" href="#t14">14</a></span><span class="t"><span class="key">from</span> <span class="nam">celery</span><span class="op">.</span><span class="nam">utils</span><span class="op">.</span><span class="nam">time</span> <span class="key">import</span> <span class="nam">humanize_seconds</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t16" href="#t16">16</a></span><span class="t"><span class="nam">__all__</span> <span class="op">=</span> <span class="op">(</span><span class="str">&#x27;Signal&#x27;</span><span class="op">,</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t16" href="#t16">16</a></span><span class="t"><span class="nam">__all__</span> <span class="op">=</span> <span class="op">(</span><span class="str">&#x27;Signal&#x27;</span><span class="op">,</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t17" href="#t17">17</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t18" href="#t18">18</a></span><span class="t"><span class="nam">logger</span> <span class="op">=</span> <span class="nam">get_logger</span><span class="op">(</span><span class="nam">__name__</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t18" href="#t18">18</a></span><span class="t"><span class="nam">logger</span> <span class="op">=</span> <span class="nam">get_logger</span><span class="op">(</span><span class="nam">__name__</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t19" href="#t19">19</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="exc show_exc"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t"><span class="key">def</span> <span class="nam">_make_id</span><span class="op">(</span><span class="nam">target</span><span class="op">)</span><span class="op">:</span>  <span class="com"># pragma: no cover</span>&nbsp;</span><span class="r"></span></p>
@@ -113,7 +113,7 @@
     <p class="exc show_exc"><span class="n"><a id="t29" href="#t29">29</a></span><span class="t">    <span class="key">return</span> <span class="nam">id</span><span class="op">(</span><span class="nam">target</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t30" href="#t30">30</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t31" href="#t31">31</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t32" href="#t32">32</a></span><span class="t"><span class="key">def</span> <span class="nam">_boundmethod_safe_weakref</span><span class="op">(</span><span class="nam">obj</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t32" href="#t32">32</a></span><span class="t"><span class="key">def</span> <span class="nam">_boundmethod_safe_weakref</span><span class="op">(</span><span class="nam">obj</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t33" href="#t33">33</a></span><span class="t">    <span class="str">&quot;&quot;&quot;Get weakref constructor appropriate for `obj`.  `obj` may be a bound method.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t34" href="#t34">34</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t35" href="#t35">35</a></span><span class="t"><span class="str">    Bound method objects must be special-cased because they&#x27;re usually garbage</span>&nbsp;</span><span class="r"></span></p>
@@ -125,33 +125,33 @@
     <p class="pln"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t"><span class="str">        object` is the instance that `obj` is bound to if it is a bound method;</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t42" href="#t42">42</a></span><span class="t"><span class="str">        otherwise `main object` is simply `obj.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t43" href="#t43">43</a></span><span class="t"><span class="str">    &quot;&quot;&quot;</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t44" href="#t44">44</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t45" href="#t45">45</a></span><span class="t">        <span class="nam">obj</span><span class="op">.</span><span class="nam">__func__</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t46" href="#t46">46</a></span><span class="t">        <span class="nam">obj</span><span class="op">.</span><span class="nam">__self__</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t44" href="#t44">44</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t45" href="#t45">45</a></span><span class="t">        <span class="nam">obj</span><span class="op">.</span><span class="nam">__func__</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t46" href="#t46">46</a></span><span class="t">        <span class="nam">obj</span><span class="op">.</span><span class="nam">__self__</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t47" href="#t47">47</a></span><span class="t">        <span class="com"># Bound method</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t48" href="#t48">48</a></span><span class="t">        <span class="key">return</span> <span class="nam">WeakMethod</span><span class="op">,</span> <span class="nam">obj</span><span class="op">.</span><span class="nam">__self__</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">    <span class="key">except</span> <span class="nam">AttributeError</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t48" href="#t48">48</a></span><span class="t">        <span class="key">return</span> <span class="nam">WeakMethod</span><span class="op">,</span> <span class="nam">obj</span><span class="op">.</span><span class="nam">__self__</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">    <span class="key">except</span> <span class="nam">AttributeError</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">        <span class="com"># Not a bound method</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">        <span class="key">return</span> <span class="nam">weakref</span><span class="op">.</span><span class="nam">ref</span><span class="op">,</span> <span class="nam">obj</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">        <span class="key">return</span> <span class="nam">weakref</span><span class="op">.</span><span class="nam">ref</span><span class="op">,</span> <span class="nam">obj</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t53" href="#t53">53</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t54" href="#t54">54</a></span><span class="t"><span class="key">def</span> <span class="nam">_make_lookup_key</span><span class="op">(</span><span class="nam">receiver</span><span class="op">,</span> <span class="nam">sender</span><span class="op">,</span> <span class="nam">dispatch_uid</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t54" href="#t54">54</a></span><span class="t"><span class="key">def</span> <span class="nam">_make_lookup_key</span><span class="op">(</span><span class="nam">receiver</span><span class="op">,</span> <span class="nam">sender</span><span class="op">,</span> <span class="nam">dispatch_uid</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t55" href="#t55">55</a></span><span class="t">    <span class="key">if</span> <span class="nam">dispatch_uid</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t">        <span class="key">return</span> <span class="op">(</span><span class="nam">dispatch_uid</span><span class="op">,</span> <span class="nam">_make_id</span><span class="op">(</span><span class="nam">sender</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t">    <span class="com"># Issue #9119 - retry-wrapped functions use the underlying function for dispatch_uid</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t">    <span class="key">elif</span> <span class="nam">hasattr</span><span class="op">(</span><span class="nam">receiver</span><span class="op">,</span> <span class="str">&#x27;_dispatch_uid&#x27;</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">        <span class="key">return</span> <span class="op">(</span><span class="nam">receiver</span><span class="op">.</span><span class="nam">_dispatch_uid</span><span class="op">,</span> <span class="nam">_make_id</span><span class="op">(</span><span class="nam">sender</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t">    <span class="key">elif</span> <span class="nam">hasattr</span><span class="op">(</span><span class="nam">receiver</span><span class="op">,</span> <span class="str">&#x27;_dispatch_uid&#x27;</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">58&#x202F;&#x219B;&#x202F;59</span><span class="annotate long">line 58 didn't jump to line 59 because the condition on line 58 was never true</span></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">        <span class="key">return</span> <span class="op">(</span><span class="nam">receiver</span><span class="op">.</span><span class="nam">_dispatch_uid</span><span class="op">,</span> <span class="nam">_make_id</span><span class="op">(</span><span class="nam">sender</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">    <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">        <span class="key">return</span> <span class="op">(</span><span class="nam">_make_id</span><span class="op">(</span><span class="nam">receiver</span><span class="op">)</span><span class="op">,</span> <span class="nam">_make_id</span><span class="op">(</span><span class="nam">sender</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t63" href="#t63">63</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t"><span class="nam">NONE_ID</span> <span class="op">=</span> <span class="nam">_make_id</span><span class="op">(</span><span class="key">None</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t"><span class="nam">NONE_ID</span> <span class="op">=</span> <span class="nam">_make_id</span><span class="op">(</span><span class="key">None</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t65" href="#t65">65</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t66" href="#t66">66</a></span><span class="t"><span class="nam">NO_RECEIVERS</span> <span class="op">=</span> <span class="nam">object</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t66" href="#t66">66</a></span><span class="t"><span class="nam">NO_RECEIVERS</span> <span class="op">=</span> <span class="nam">object</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t67" href="#t67">67</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t68" href="#t68">68</a></span><span class="t"><span class="nam">RECEIVER_RETRY_ERROR</span> <span class="op">=</span> <span class="str">&quot;&quot;&quot;\</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t69" href="#t69">69</a></span><span class="t"><span class="str">Could not process signal receiver %(receiver)s. Retrying %(when)s...\</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t70" href="#t70">70</a></span><span class="t"><span class="str">&quot;&quot;&quot;</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t68" href="#t68">68</a></span><span class="t"><span class="nam">RECEIVER_RETRY_ERROR</span> <span class="op">=</span> <span class="str">&quot;&quot;&quot;\</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t69" href="#t69">69</a></span><span class="t"><span class="str">Could not process signal receiver %(receiver)s. Retrying %(when)s...\</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t70" href="#t70">70</a></span><span class="t"><span class="str">&quot;&quot;&quot;</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t71" href="#t71">71</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t72" href="#t72">72</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="exc show_exc"><span class="n"><a id="t73" href="#t73">73</a></span><span class="t"><span class="key">class</span> <span class="nam">Signal</span><span class="op">:</span>  <span class="com"># pragma: no cover</span>&nbsp;</span><span class="r"></span></p>
@@ -444,12 +444,12 @@
 <footer>
     <div class="content">
         <p>
-            <a class="nav" href="z_bca77cdafba7ef52_canvas_py.html">&#xab; anterior</a> &nbsp; &nbsp;
+            <a class="nav" href="z_2c446c6286113091_canvas_py.html">&#xab; anterior</a> &nbsp; &nbsp;
             <a class="nav" href="index.html">&Hat; índice</a> &nbsp; &nbsp;
             <a class="nav" href="index.html">&#xbb; próximo</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.2">coverage.py v7.16.2</a>,
-            criado em 2026-09-29 10:02 -0300
+            criado em 2026-09-29 09:58 -0300
         </p>
     </div>
 </footer>
