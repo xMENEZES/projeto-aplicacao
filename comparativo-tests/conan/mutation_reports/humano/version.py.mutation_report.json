@@ -1,0 +1,250 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\conan\\human_original\\conan\\internal\\model\\version.py",
+  "total_sites_no_arquivo": 91,
+  "mutantes_gerados": 40,
+  "mortos": 26,
+  "vivos": 14,
+  "escore_mutacao_pct": 65.0,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 27: AOR Add -> Sub",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 2,
+      "description": "linha 44: ROR Lt -> LtE",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 4,
+      "description": "linha 64: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=4"
+    },
+    {
+      "index": 6,
+      "description": "linha 77: COR And -> Or",
+      "survived": false,
+      "reason": "exit=4"
+    },
+    {
+      "index": 9,
+      "description": "linha 100: AOR Mult -> Div",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 11,
+      "description": "linha 100: AOR Sub -> Mult",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 13,
+      "description": "linha 111: AOR Mult -> Div",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 15,
+      "description": "linha 111: AOR Sub -> Mult",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 18,
+      "description": "linha 175: IOR Is -> IsNot",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 20,
+      "description": "linha 185: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 22,
+      "description": "linha 191: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 25,
+      "description": "linha 20: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 27,
+      "description": "linha 27: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 29,
+      "description": "linha 35: SDL remove Return -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 31,
+      "description": "linha 57: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 34,
+      "description": "linha 60: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 36,
+      "description": "linha 75: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=4"
+    },
+    {
+      "index": 38,
+      "description": "linha 79: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 40,
+      "description": "linha 100: SDL remove Expr -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 43,
+      "description": "linha 106: SDL remove Assign -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 45,
+      "description": "linha 112: SDL remove Assign -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 47,
+      "description": "linha 114: SDL remove Return -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 50,
+      "description": "linha 126: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 52,
+      "description": "linha 160: SDL remove Return -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 54,
+      "description": "linha 172: SDL remove Return -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 56,
+      "description": "linha 14: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=4"
+    },
+    {
+      "index": 59,
+      "description": "linha 44: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 61,
+      "description": "linha 69: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 63,
+      "description": "linha 97: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 65,
+      "description": "linha 131: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 68,
+      "description": "linha 152: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 70,
+      "description": "linha 166: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 72,
+      "description": "linha 178: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 75,
+      "description": "linha 65: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 77,
+      "description": "linha 71: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=4"
+    },
+    {
+      "index": 79,
+      "description": "linha 99: SDL remove Raise -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 81,
+      "description": "linha 133: SDL remove Return -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 84,
+      "description": "linha 154: SDL remove Return -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 86,
+      "description": "linha 196: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 88,
+      "description": "linha 188: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    }
+  ]
+}

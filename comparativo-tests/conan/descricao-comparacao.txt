@@ -1,0 +1,101 @@
+COMPARAÇÃO DE TESTES — CONAN (testes escritos por IA vs. testes humanos originais)
+===================================================================================
+
+O QUE FOI COMPARADO
+--------------------
+Quatro arquivos do código-fonte do Conan (versão 2.32.0-dev, commit bff82174):
+
+1. conan/internal/model/options.py        -> classes _PackageOption, _PackageOptions, Options
+2. conan/internal/model/requires.py       -> classes Requirement, Requirements
+3. conan/internal/model/version.py        -> classe Version
+4. conan/internal/model/version_range.py  -> classe VersionRange
+
+AJUSTE FEITO ANTES DE MEDIR (Etapa 2 da comparação)
+------------------------------------------------------
+No mapeamento inicial (IA x Humano), 3 classes (+ 1 caso parcial) testadas
+pela IA só tinham correspondente humano num nível de abstração diferente:
+Conan é uma ferramenta de linha de comando que resolve grafos de dependência
+a partir de receitas (conanfile.py) -- ninguém, nem os próprios mantenedores,
+instancia _PackageOption/Requirement/VersionRange isolados num teste; o
+comportamento observável de fora é sempre "o que uma receita real declara,
+resolvido por `conan create`/`graph info`". Ajustes: as classes de opções
+passaram a ser testadas via TestClient com receitas reais declarando
+options/default_options e a flag -o da CLI; Requirement/Requirements via
+self.requires()/self.tool_requires() num conanfile real, resolvido pelo
+grafo; VersionRange via requires="pkg/[>=1.0 <2.0]" no conanfile, resolvido
+por graph info contra versões publicadas de fato no cache local -- nunca por
+chamada isolada a VersionRange(...).contains().
+
+COMO OS TESTES FORAM GERADOS
+------------------------------
+- A suíte de IA foi escrita olhando SOMENTE o código de produção do Conan
+  (nunca leu os testes humanos), usando as técnicas de teste de software
+  (classes de equivalência, valor limite, tabela de decisão) da skill
+  "gerador-de-testes", com o utilitário de testes que o próprio Conan
+  distribui (conan.test.utils.tools.TestClient) para rodar a CLI de ponta a
+  ponta contra um cache e uma pasta de trabalho isolados por teste.
+- A suíte humana é a suíte de testes que já vem no próprio repositório do
+  Conan no GitHub, escrita pelos mantenedores do projeto -- organizada em
+  test/unittests/ (unitário direto) e test/integration/ + test/functional/
+  (via CLI/grafo, sem compilador C/C++ real).
+- As duas suítes rodam contra o MESMO código-fonte, no MESMO commit
+  (bff82174, confirmado byte a byte nos 4 arquivos-alvo depois de um
+  incidente de versão -- ver RELATORIO_COMPARACAO_TESTES_IA_HUMANOS.md,
+  seção 7.4).
+
+COMO A COBERTURA FOI MEDIDA
+------------------------------
+Ferramenta: pytest + coverage.py (via plugin pytest-cov).
+Comando (mesma ideia dos dois lados, só troca a suíte de teste):
+
+    pytest <arquivos de teste> --cov=conan --cov-branch --cov-report=html
+
+Isso gera um relatório HTML (pastas cov_ia/ e cov_humano/ nesta mesma pasta)
+mostrando, por arquivo, cobertura de LINHA e de BRANCH (desvio) -- branch é a
+métrica mais importante das duas, ver descrição completa no documento
+equivalente do Celery.
+
+Particularidade do lado humano do Conan: requires.py não tem nenhum arquivo
+de teste unitário direto -- por isso o "comando de teste" desse arquivo, dos
+dois lados, é sempre via integração/grafo (o mesmo nível que a suíte humana
+usa de verdade), nunca um teste isolado da classe.
+
+COMO A MUTAÇÃO FOI MEDIDA
+----------------------------
+Mesmo processo do Celery/Scrapy/Requests: um script próprio (mutation_test.py)
+troca um operador de cada vez no código de produção e roda a suíte de testes.
+Se algum teste falhar, o mutante morreu (bom sinal); se todos passarem, o
+mutante sobreviveu (sinal de teste fraco naquele trecho).
+
+options.py e requires.py rodam via TestClient real (cria/resolve um grafo de
+verdade a cada execução) e por isso são mais lentos (~58-61s por execução do
+lado humano) -- por isso o corte foi reduzido para 15 mutantes nesses 2
+arquivos (sorteados de forma uniforme ao longo do arquivo inteiro, não só do
+começo). version.py e version_range.py rodam bem mais rápido (version.py nem
+depende de TestClient) e mantiveram os 40 mutantes padrão. O mesmo corte foi
+aplicado nos dois lados, para sortear e comparar exatamente os mesmos pontos.
+
+RESULTADO FINAL
+-----------------
+                                        Cobertura Linha    Cobertura Branch    Escore de Mutação
+Arquivo                                IA      Humano      IA      Humano      IA        Humano
+options.py (_PackageOption(s))         85%     96%         73%     90%         66,7%     86,7%
+requires.py (Requirement(s))           68%     85%         49%     72%         53,3%     60,0%
+version.py (Version)                   89%     94%         97%     100%        85,0%     65,0%
+version_range.py (VersionRange)        54%     94%         45%     93%         32,5%     85,0%
+
+CONCLUSÃO
+-----------
+Dos 4 arquivos, a suíte humana venceu o escore de mutação em 3 (options.py,
+requires.py, version_range.py) e a IA venceu em 1 (version.py). O caso mais
+marcante é version_range.py: a suíte humana tem décadas de bugs de parsing de
+faixa de versão acumulados em forma de teste de regressão (formatos raros,
+combinações de operadores, casos de erro), e isso aparece tanto na cobertura
+de linha (54% IA vs. 94% humano) quanto, de forma amplificada, no escore de
+mutação (32,5% vs. 85,0%). Já em version.py -- a única classe do lote que é
+um valor puro, sem depender de grafo ou cache -- a suíte de IA, gerada com
+foco explícito em classes de equivalência e valor limite (zeros à direita,
+bump(), comparação numérica vs. lexicográfica, achados de comportamento
+divergente do docstring), supera a suíte humana. O mesmo padrão de "IA
+supera em unidades pequenas e autocontidas" apareceu em auth.py/api.py do
+Requests.

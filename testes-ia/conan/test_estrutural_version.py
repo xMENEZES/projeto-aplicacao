@@ -21,7 +21,6 @@ import pytest
 
 from conan.errors import ConanException
 from conan.internal.model.version import Version
-from conan.internal.model.version_range import VersionRange
 
 
 # --------------------------------------------------------------------------
@@ -134,12 +133,24 @@ def test_bump_em_indice_nao_numerico_levanta_conan_exception():
         Version("1.alpha.3").bump(1)
 
 
-def test_upper_bound_exclui_prereleases():
+def test_upper_bound_exclui_prereleases(client):
     """upper_bound acrescenta um '-' ao final para que pré-releases da
-    própria versão-limite não sejam incluídos no range calculado."""
+    própria versão-limite não sejam incluídas na faixa -- verificado pela
+    versão que o grafo de fato resolve (requires="liba/[<limite]" real,
+    contra versões publicadas no cache), não por VersionRange.contains()
+    chamado isolado."""
     limite = Version("2.0").upper_bound(0)
-    assert VersionRange(f"<{limite}").contains(Version("2.0.0-alpha"), resolve_prerelease=None) is False
-    assert VersionRange(f"<{limite}").contains(Version("1.9.9"), resolve_prerelease=None) is True
+
+    client.save({"conanfile.py": _lib("2.0.0-alpha")})
+    client.run("create .")
+    client.save({"conanfile.py": _app_com_faixa(f"<{limite}")}, clean_first=True)
+    client.run("graph info .", assert_error=True)  # pré-release da própria versão-limite não resolve
+
+    client.save({"conanfile.py": _lib("1.9.9")}, clean_first=True)
+    client.run("create .")
+    client.save({"conanfile.py": _app_com_faixa(f"<{limite}")}, clean_first=True)
+    client.run("graph info . --format=json")
+    assert _versao_resolvida(client) == "1.9.9"
 
 
 # --------------------------------------------------------------------------

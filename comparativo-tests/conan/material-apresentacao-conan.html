@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparação de Testes — Conan</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --ink: #1f2430;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --ia: #6366f1;
+    --humano: #059669;
+    --accent: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 24px 96px; }
+  header { margin-bottom: 40px; }
+  header .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  h1 { font-size: 32px; margin: 6px 0 8px; }
+  header p.sub { color: var(--muted); font-size: 15px; margin: 0; }
+
+  section { margin-bottom: 48px; }
+  h2 {
+    font-size: 20px;
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .metodologia-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .metodologia-grid .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .metodologia-grid .card .num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .metodologia-grid .card h3 { margin: 0 0 8px; font-size: 15px; }
+  .metodologia-grid .card p { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 12.5px;
+  }
+  th, td { padding: 9px 10px; text-align: center; border-bottom: 1px solid var(--line); }
+  th { background: #fafaf9; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+  td:first-child, th:first-child { text-align: left; font-weight: 600; }
+  tbody tr:last-child td { border-bottom: none; }
+  .ia-col { color: var(--ia); font-weight: 700; }
+  .humano-col { color: var(--humano); font-weight: 700; }
+  .na { color: var(--muted); font-style: italic; font-weight: 400; }
+
+  .legend { display: flex; gap: 20px; align-items: center; margin: 14px 0 20px; font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot.ia { background: var(--ia); }
+  .dot.humano { background: var(--humano); }
+
+  .barchart .row { margin-bottom: 14px; }
+  .barchart .row .label { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+  .bar-track { background: #edeef0; border-radius: 6px; height: 17px; position: relative; overflow: hidden; margin-bottom: 4px; }
+  .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 10.5px; color: white; font-weight: 700; white-space: nowrap; }
+  .bar-fill.ia { background: var(--ia); }
+  .bar-fill.humano { background: var(--humano); }
+  .bar-fill.na { background: #cbd0d8; color: #555; }
+
+  .scoreboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 16px 0 8px;
+  }
+  .scoreboard .box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .scoreboard .box .n { font-size: 28px; font-weight: 800; }
+  .scoreboard .box .l { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .scoreboard .box.humano .n { color: var(--humano); }
+  .scoreboard .box.empate .n { color: var(--accent); }
+  .scoreboard .box.ia .n { color: var(--ia); }
+
+  .conclusao {
+    background: #fff8ec;
+    border: 1px solid #f3d999;
+    border-radius: 10px;
+    padding: 20px 22px;
+    font-size: 14.5px;
+  }
+  .conclusao strong { color: #92620a; }
+
+  .incidente {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 13.5px;
+    color: #7f1d1d;
+  }
+
+  footer { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+  @media (max-width: 640px) {
+    .metodologia-grid, .scoreboard { grid-template-columns: 1fr; }
+    table { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Faculdade · Engenharia de Qualidade e Teste de Software</div>
+    <h1>Testes de IA vs. Testes Humanos — Conan</h1>
+    <p class="sub">Comparação de cobertura e teste de mutação em 4 classes do pacote Conan 2.32.0-dev, entre uma suíte de testes escrita por IA (sem acesso aos testes originais) e a suíte de testes mantida pelos mantenedores do projeto.</p>
+  </header>
+
+  <section>
+    <h2>Metodologia</h2>
+    <div class="metodologia-grid">
+      <div class="card">
+        <div class="num">1 — Geração</div>
+        <h3>Suíte de IA independente</h3>
+        <p>Testes escritos olhando só o código de produção do Conan, com o TestClient que o próprio projeto distribui. As 3 classes sem par humano direto (_PackageOption(s), Requirement(s), VersionRange) foram reescritas via receitas reais + CLI/grafo, o único nível observável de fora.</p>
+      </div>
+      <div class="card">
+        <div class="num">2 — Cobertura</div>
+        <h3>pytest + coverage.py</h3>
+        <p>Cada suíte rodou contra o mesmo commit exato (bff82174, 2.32.0-dev), medindo cobertura de linha e de branch nos 4 arquivos-alvo.</p>
+      </div>
+      <div class="card">
+        <div class="num">3 — Mutação</div>
+        <h3>Ferramenta própria</h3>
+        <p>Mesmo script usado em Celery/Scrapy/Requests (ROR/IOR/MOR/AOR/COR/SDL). Corte reduzido para 15 mutantes em options.py/requires.py (mais lentos via TestClient real), mesmo corte nos dois lados.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Incidente corrigido antes de medir</h2>
+    <div class="incidente">
+      O clone humano (<code>conan/human_original</code>) estava em <code>2.33.0-dev</code>, uma versão diferente da usada pela suíte
+      de IA (<code>2.32.0-dev</code>) — códigos de commits distintos, o que invalidaria a comparação. Identificado o commit exato
+      (<code>bff82174</code>, 26/08/2026) via cruzamento com a API do GitHub e diff byte a byte dos 4 arquivos-alvo; clone humano
+      realinhado antes de qualquer medição. Detalhes completos no relatório vivo, seção 7.4.
+    </div>
+  </section>
+
+  <section>
+    <h2>Placar — escore de mutação (4 arquivos, ROR/IOR/MOR/AOR/COR/SDL)</h2>
+    <div class="scoreboard">
+      <div class="box humano"><div class="n">3</div><div class="l">arquivos onde o humano venceu</div></div>
+      <div class="box empate"><div class="n">0</div><div class="l">arquivos empatados</div></div>
+      <div class="box ia"><div class="n">1</div><div class="l">arquivo onde a IA venceu</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Resultado consolidado</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Arquivo (classe)</th>
+          <th class="ia-col">Linha IA</th>
+          <th class="humano-col">Linha Hum</th>
+          <th class="ia-col">Branch IA</th>
+          <th class="humano-col">Branch Hum</th>
+          <th class="ia-col">Mutação IA</th>
+          <th class="humano-col">Mutação Hum</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>options.py (_PackageOption(s))</td><td class="ia-col">85%</td><td class="humano-col">96%</td><td class="ia-col">73%</td><td class="humano-col">90%</td><td class="ia-col">66,7%</td><td class="humano-col">86,7%</td></tr>
+        <tr><td>requires.py (Requirement(s))</td><td class="ia-col">68%</td><td class="humano-col">85%</td><td class="ia-col">49%</td><td class="humano-col">72%</td><td class="ia-col">53,3%</td><td class="humano-col">60,0%</td></tr>
+        <tr><td>version.py (Version)</td><td class="ia-col">89%</td><td class="humano-col">94%</td><td class="ia-col">97%</td><td class="humano-col">100%</td><td class="ia-col">85,0%</td><td class="humano-col">65,0%</td></tr>
+        <tr><td>version_range.py (VersionRange)</td><td class="ia-col">54%</td><td class="humano-col">94%</td><td class="ia-col">45%</td><td class="humano-col">93%</td><td class="ia-col">32,5%</td><td class="humano-col">85,0%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Escore de mutação, lado a lado (4 arquivos)</h2>
+    <div class="legend">
+      <span><span class="dot ia"></span> IA</span>
+      <span><span class="dot humano"></span> Humano</span>
+    </div>
+    <div class="barchart">
+      <div class="row"><div class="label">options.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:66.7%">66,7%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:86.7%">86,7%</div></div>
+      </div>
+      <div class="row"><div class="label">requires.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:53.3%">53,3%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:60%">60,0%</div></div>
+      </div>
+      <div class="row"><div class="label">version.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:85%">85,0%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:65%">65,0%</div></div>
+      </div>
+      <div class="row"><div class="label">version_range.py</div>
+        <div class="bar-track"><div class="bar-fill ia" style="width:32.5%">32,5%</div></div>
+        <div class="bar-track"><div class="bar-fill humano" style="width:85%">85,0%</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Conclusão</h2>
+    <div class="conclusao">
+      Dos 4 arquivos, a suíte humana venceu em <strong>3</strong> (<code>options.py</code>, <code>requires.py</code>,
+      <code>version_range.py</code>) e a IA venceu em <strong>1</strong> (<code>version.py</code>). O caso mais marcante é
+      <code>version_range.py</code>: décadas de bugs de parsing de faixa de versão viraram teste de regressão humano, e isso aparece
+      amplificado no escore de mutação (32,5% IA vs. 85,0% humano). Já em <code>version.py</code> — a única classe de valor pura do
+      lote, sem depender de grafo ou cache — a suíte de IA, com foco explícito em classes de equivalência e valor limite, supera a
+      suíte humana. Mesmo padrão de "IA se destaca em unidades pequenas e autocontidas" observado em <code>auth.py</code>/<code>api.py</code>
+      do Requests.
+    </div>
+  </section>
+
+  <footer>
+    Gerado a partir da comparação de testes IA vs. Humano — repositório Conan 2.32.0-dev (commit bff82174) · dados completos em <code>descricao-comparacao.txt</code>, <code>cov_ia/</code>, <code>cov_humano/</code> e <code>mutation_reports/</code> nesta mesma pasta.
+  </footer>
+
+</div>
+</body>
+</html>

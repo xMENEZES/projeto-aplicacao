@@ -1,0 +1,100 @@
+{
+  "arquivo": "C:\\claude\\projeto-aplicacao\\conan\\human_original\\conan\\internal\\model\\options.py",
+  "total_sites_no_arquivo": 217,
+  "mutantes_gerados": 15,
+  "mortos": 13,
+  "vivos": 2,
+  "escore_mutacao_pct": 86.7,
+  "detalhes": [
+    {
+      "index": 0,
+      "description": "linha 11: AOR Mod -> Add",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 14,
+      "description": "linha 60: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 28,
+      "description": "linha 159: COR And -> Or",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 43,
+      "description": "linha 213: MOR NotIn -> In",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 57,
+      "description": "linha 321: ROR Eq -> NotEq",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 72,
+      "description": "linha 31: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 86,
+      "description": "linha 88: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 101,
+      "description": "linha 174: SDL remove Expr -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    },
+    {
+      "index": 115,
+      "description": "linha 270: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 130,
+      "description": "linha 339: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 144,
+      "description": "linha 406: SDL remove Assign -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 159,
+      "description": "linha 74: SDL remove Return -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 173,
+      "description": "linha 192: SDL remove Raise -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 188,
+      "description": "linha 115: SDL remove Expr -> pass",
+      "survived": false,
+      "reason": "exit=1"
+    },
+    {
+      "index": 202,
+      "description": "linha 233: SDL remove Assign -> pass",
+      "survived": true,
+      "reason": "exit=0"
+    }
+  ]
+}
