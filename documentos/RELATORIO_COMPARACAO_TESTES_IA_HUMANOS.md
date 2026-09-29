@@ -402,4 +402,19 @@ Com isso: `response/__init__.py` foi de "sem pontos mutáveis" para 70,0% (IA) /
 - [x] Dask concluído (cobertura + mutação, tabela final na seção 7.5) — `toposort` já estava fora do escopo desde uma sessão anterior.
 - [x] Corrigir escopo das pastas `cov_ia`/`cov_humano` de Requests, Conan e Dask para conter só os arquivos comparados (não o pacote inteiro).
 - [ ] Gerar `descricao-comparacao.txt` + material de apresentação do Dask em `comparativo-tests\dask\`.
-- [ ] Montar o material de apresentação final com os 5 repositórios.
+- [x] Montar o material de apresentação final com os 5 repositórios (`comparativo-tests\material-apresentacao-final.html`).
+
+## 9. Resultado final consolidado (29/09/2026)
+
+Placar geral de escore de mutação, 38 arquivos nos 5 repositórios:
+
+| Repositório | Arquivos | Humano venceu | Empate | IA venceu |
+|---|---|---|---|---|
+| Celery | 7 | 6 | 1 | 0 |
+| Scrapy | 14 | 7 | 6 | 1 |
+| Requests | 8 | 5 | 1 | 2 |
+| Conan | 4 | 3 | 0 | 1 |
+| Dask | 5 | 4 | 0 | 1 |
+| **Total** | **38** | **25 (66%)** | **8 (21%)** | **5 (13%)** |
+
+Ver `comparativo-tests\material-apresentacao-final.html` para o material de apresentação completo (placar, gráfico por repositório, conclusão consolidada).

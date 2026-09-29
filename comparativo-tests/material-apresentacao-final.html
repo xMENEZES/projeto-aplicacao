@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparação de Testes IA vs. Humanos — Resultado Final</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --ink: #1f2430;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --ia: #6366f1;
+    --humano: #059669;
+    --accent: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 48px 24px 96px; }
+  header { margin-bottom: 40px; }
+  header .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  h1 { font-size: 34px; margin: 6px 0 8px; }
+  header p.sub { color: var(--muted); font-size: 15.5px; margin: 0; max-width: 760px; }
+
+  section { margin-bottom: 52px; }
+  h2 {
+    font-size: 21px;
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  h3 { font-size: 16px; margin: 0 0 10px; }
+
+  .metodologia-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+  }
+  .metodologia-grid .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .metodologia-grid .card .num {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .metodologia-grid .card h3 { margin: 0 0 6px; font-size: 14px; }
+  .metodologia-grid .card p { margin: 0; font-size: 12.5px; color: var(--muted); }
+
+  .scoreboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 16px 0 8px;
+  }
+  .scoreboard .box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+  }
+  .scoreboard .box .n { font-size: 40px; font-weight: 800; line-height: 1; }
+  .scoreboard .box .l { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .scoreboard .box.humano .n { color: var(--humano); }
+  .scoreboard .box.empate .n { color: var(--accent); }
+  .scoreboard .box.ia .n { color: var(--ia); }
+
+  .repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+  .repo-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .repo-card h3 { display: flex; align-items: baseline; justify-content: space-between; }
+  .repo-card .versao { font-size: 11.5px; color: var(--muted); font-weight: 400; }
+  .repo-card .placar { display: flex; gap: 10px; margin: 10px 0 6px; font-size: 13px; }
+  .repo-card .placar b { font-size: 17px; }
+  .repo-card .placar .h b { color: var(--humano); }
+  .repo-card .placar .e b { color: var(--accent); }
+  .repo-card .placar .i b { color: var(--ia); }
+  .repo-card p.nota { margin: 8px 0 0; font-size: 12.5px; color: var(--muted); }
+  .repo-card a.link { display: inline-block; margin-top: 10px; font-size: 12.5px; color: var(--humano); text-decoration: none; font-weight: 600; }
+  .repo-card a.link:hover { text-decoration: underline; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  th, td { padding: 10px 12px; text-align: center; border-bottom: 1px solid var(--line); }
+  th { background: #fafaf9; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+  td:first-child, th:first-child { text-align: left; font-weight: 600; }
+  tbody tr:last-child td { border-bottom: none; }
+  .humano-col { color: var(--humano); font-weight: 700; }
+  .ia-col { color: var(--ia); font-weight: 700; }
+  .empate-col { color: var(--accent); font-weight: 700; }
+
+  .barchart .row { margin-bottom: 12px; }
+  .barchart .row .label { font-size: 13px; font-weight: 600; margin-bottom: 5px; display: flex; justify-content: space-between; }
+  .barchart .row .label .contagem { font-weight: 400; color: var(--muted); font-size: 12px; }
+  .stacked-bar {
+    display: flex;
+    height: 20px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #edeef0;
+  }
+  .stacked-bar .seg { display: flex; align-items: center; justify-content: center; font-size: 10.5px; color: white; font-weight: 700; }
+  .stacked-bar .seg.humano { background: var(--humano); }
+  .stacked-bar .seg.empate { background: var(--accent); }
+  .stacked-bar .seg.ia { background: var(--ia); }
+
+  .conclusao {
+    background: #fff8ec;
+    border: 1px solid #f3d999;
+    border-radius: 10px;
+    padding: 22px 24px;
+    font-size: 14.5px;
+  }
+  .conclusao strong { color: #92620a; }
+  .conclusao h3 { color: #92620a; font-size: 15px; }
+  .conclusao ul { margin: 8px 0 16px; padding-left: 20px; }
+  .conclusao li { margin-bottom: 6px; }
+
+  .metodo-nota {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .metodo-nota strong { color: var(--ink); }
+
+  footer { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+  @media (max-width: 800px) {
+    .metodologia-grid { grid-template-columns: repeat(2, 1fr); }
+    .scoreboard { grid-template-columns: 1fr; }
+    table { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Faculdade · Engenharia de Qualidade e Teste de Software</div>
+    <h1>Testes de IA vs. Testes Humanos — Resultado Final</h1>
+    <p class="sub">Comparação de cobertura (linha/branch) e teste de mutação entre suítes de teste escritas por IA (Claude, sem acesso aos testes originais) e as suítes de teste humanas mantidas pelos próprios projetos, em 38 arquivos de código-fonte espalhados por 5 repositórios open-source de peso variado: Celery, Scrapy, Requests, Conan e Dask.</p>
+  </header>
+
+  <section>
+    <h2>Metodologia (resumo)</h2>
+    <div class="metodologia-grid">
+      <div class="card">
+        <div class="num">1</div>
+        <h3>Geração independente</h3>
+        <p>IA escreveu os testes olhando só o código de produção, nunca a suíte humana. Ajustes de escopo (remover/reescrever) quando o nível de abstração não tinha par humano possível.</p>
+      </div>
+      <div class="card">
+        <div class="num">2</div>
+        <h3>Mesmo código, duas suítes</h3>
+        <p>As duas suítes de cada repositório rodaram contra o mesmo commit/versão exata — confirmado byte a byte nos arquivos-alvo em todos os casos.</p>
+      </div>
+      <div class="card">
+        <div class="num">3</div>
+        <h3>Cobertura</h3>
+        <p>pytest + coverage.py, linha e branch. Branch é a métrica mais reveladora: mostra se os dois lados de cada decisão foram de fato exercitados.</p>
+      </div>
+      <div class="card">
+        <div class="num">4</div>
+        <h3>Mutação</h3>
+        <p>Ferramenta própria (mutmut não roda no Windows): ROR/IOR/MOR/AOR/COR/SDL — troca operadores e remove comandos, mede quantos testes percebem a mudança.</p>
+      </div>
+      <div class="card">
+        <div class="num">5</div>
+        <h3>38 arquivos, 5 repos</h3>
+        <p>Celery (7), Scrapy (14), Requests (8), Conan (4), Dask (5) — só as classes/módulos onde as duas suítes testam de fato a mesma coisa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Placar geral — escore de mutação (38 arquivos, os 5 repositórios)</h2>
+    <div class="scoreboard">
+      <div class="box humano"><div class="n">25</div><div class="l">arquivos onde a suíte humana venceu</div></div>
+      <div class="box empate"><div class="n">8</div><div class="l">arquivos empatados</div></div>
+      <div class="box ia"><div class="n">5</div><div class="l">arquivos onde a suíte de IA venceu</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Por repositório</h2>
+    <div class="barchart">
+      <div class="row">
+        <div class="label"><span>Celery <span class="contagem">(7 arquivos)</span></span></div>
+        <div class="stacked-bar">
+          <div class="seg humano" style="width:85.7%">6</div>
+          <div class="seg empate" style="width:14.3%">1</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label"><span>Scrapy <span class="contagem">(14 arquivos)</span></span></div>
+        <div class="stacked-bar">
+          <div class="seg humano" style="width:50%">7</div>
+          <div class="seg empate" style="width:42.9%">6</div>
+          <div class="seg ia" style="width:7.1%">1</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label"><span>Requests <span class="contagem">(8 arquivos)</span></span></div>
+        <div class="stacked-bar">
+          <div class="seg humano" style="width:62.5%">5</div>
+          <div class="seg empate" style="width:12.5%">1</div>
+          <div class="seg ia" style="width:25%">2</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label"><span>Conan <span class="contagem">(4 arquivos)</span></span></div>
+        <div class="stacked-bar">
+          <div class="seg humano" style="width:75%">3</div>
+          <div class="seg ia" style="width:25%">1</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label"><span>Dask <span class="contagem">(5 arquivos)</span></span></div>
+        <div class="stacked-bar">
+          <div class="seg humano" style="width:80%">4</div>
+          <div class="seg ia" style="width:20%">1</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Detalhe por repositório</h2>
+    <div class="repo-grid">
+      <div class="repo-card">
+        <h3>Celery <span class="versao">5.6.2</span></h3>
+        <div class="placar">
+          <span class="h">Humano <b>6</b></span>
+          <span class="e">Empate <b>1</b></span>
+          <span class="i">IA <b>0</b></span>
+        </div>
+        <p class="nota">Nenhum gap de escopo — todas as unidades testadas pela IA já tinham par humano. Único empate: cache.py, 100% dos dois lados.</p>
+        <a class="link" href="celery/material-apresentacao-celery.html">Ver detalhes →</a>
+      </div>
+      <div class="repo-card">
+        <h3>Scrapy <span class="versao">2.17.0</span></h3>
+        <div class="placar">
+          <span class="h">Humano <b>7</b></span>
+          <span class="e">Empate <b>6</b></span>
+          <span class="i">IA <b>1</b></span>
+        </div>
+        <p class="nota">Maior repositório da comparação (14 arquivos). Script de mutação ampliado (IOR/SDL) para cobrir 2 classes sem operador relacional/aritmético/lógico.</p>
+        <a class="link" href="scrapy/material-apresentacao-scrapy.html">Ver detalhes →</a>
+      </div>
+      <div class="repo-card">
+        <h3>Requests <span class="versao">2.34.2</span></h3>
+        <div class="placar">
+          <span class="h">Humano <b>5</b></span>
+          <span class="e">Empate <b>1</b></span>
+          <span class="i">IA <b>2</b></span>
+        </div>
+        <p class="nota">3 pontos de teste reescritos para o mesmo nível de abstração da suíte humana (redirects reais, tupla auth=) antes de medir.</p>
+        <a class="link" href="requests/material-apresentacao-requests.html">Ver detalhes →</a>
+      </div>
+      <div class="repo-card">
+        <h3>Conan <span class="versao">2.32.0-dev</span></h3>
+        <div class="placar">
+          <span class="h">Humano <b>3</b></span>
+          <span class="e">Empate <b>0</b></span>
+          <span class="i">IA <b>1</b></span>
+        </div>
+        <p class="nota">Menor repositório da comparação (4 arquivos). Incidente de versão do clone humano corrigido via commit exato antes de medir.</p>
+        <a class="link" href="conan/material-apresentacao-conan.html">Ver detalhes →</a>
+      </div>
+      <div class="repo-card">
+        <h3>Dask <span class="versao">817e5ffc</span></h3>
+        <div class="placar">
+          <span class="h">Humano <b>4</b></span>
+          <span class="e">Empate <b>0</b></span>
+          <span class="i">IA <b>1</b></span>
+        </div>
+        <p class="nota">Caso mais extremo do projeto: optimization.py (10% de mutação IA vs. 77,5% humano) — cobertura indireta via toda a bateria de testes de grafo do projeto.</p>
+        <a class="link" href="dask/material-apresentacao-dask.html">Ver detalhes →</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Conclusão</h2>
+    <div class="conclusao">
+      <p>Nos 38 arquivos comparados, a suíte humana venceu o escore de mutação em <strong>25</strong> (66%), empatou em <strong>8</strong> (21%)
+      e a suíte de IA venceu em <strong>5</strong> (13%). O padrão se repete de forma consistente nos 5 repositórios:</p>
+      <ul>
+        <li><strong>Cobertura de linha alta não é sinônimo de teste forte.</strong> Em vários arquivos a suíte de IA cobre mais linhas/branches
+        de código do que a humana (ex.: <code>crawler.py</code> e <code>settings/__init__.py</code> no Scrapy, <code>sessions.py</code> no
+        Requests) e mesmo assim mata proporcionalmente menos mutantes — sinal de que a IA "passa pela linha" sem verificar a decisão com a
+        mesma intenção que um teste humano, escrito a partir de um bug real ou de anos de manutenção, costuma ter.</li>
+        <li><strong>A IA se destaca em unidades pequenas, puras e autocontidas</strong> — classes de valor sem I/O nem dependência externa
+        (<code>version.py</code> no Conan, <code>core.py</code> no Dask), APIs públicas pequenas testadas ponta a ponta
+        (<code>api.py</code> no Requests), ou onde a técnica formal de geração de casos (classes de equivalência, valor limite, tabela de
+        decisão) cobre mais casos de borda do que a suíte humana historicamente testou (<code>auth.py</code> no Requests).</li>
+        <li><strong>A suíte humana se destaca quando o comportamento depende de contexto de uso real</strong> — grafos de execução completos
+        (<code>optimization.py</code> no Dask), décadas de bugs de parsing acumulados como regressão (<code>version_range.py</code> no
+        Conan), ou integração com toda a infraestrutura do projeto (<code>base.py</code>/<code>canvas.py</code> no Celery) — um tipo de
+        cobertura indireta que uma suíte gerada olhando só a assinatura pública de uma função não tem como replicar sem o mesmo histórico
+        de incidentes reais por trás.</li>
+      </ul>
+      <p>Em resumo: a suíte de IA, gerada com técnicas formais de teste de software e sem nunca ver os testes originais, atinge um nível de
+      cobertura de linha comparável ao humano com frequência — mas o escore de mutação, medida mais rigorosa de força de teste, mostra que a
+      suíte humana ainda testa com mais intenção a maioria das decisões de código, sobretudo onde o comportamento correto depende de
+      contexto de produção acumulado ao longo dos anos.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Nota metodológica</h2>
+    <div class="metodo-nota">
+      Cada repositório tem sua própria pasta em <code>comparativo-tests/&lt;repo&gt;/</code> com: <code>cov_ia/</code> e
+      <code>cov_humano/</code> (relatórios HTML de cobertura, traduzidos para português, restritos aos arquivos de fato comparados),
+      <code>mutation_reports/</code> (um JSON por arquivo, por lado), <code>descricao-comparacao.txt</code> (explicação em linguagem
+      simples do que foi feito) e <code>material-apresentacao-&lt;repo&gt;.html</code> (a versão desta página, focada só naquele
+      repositório). O relatório completo do processo — incidentes encontrados, decisões de ajuste de escopo, comandos exatos usados —
+      está em <strong>documentos/RELATORIO_COMPARACAO_TESTES_IA_HUMANOS.md</strong>, na raiz do projeto.
+    </div>
+  </section>
+
+  <footer>
+    Gerado a partir da comparação de testes IA vs. Humano — 5 repositórios, 38 arquivos, 720 testes de IA escritos no total.
+  </footer>
+
+</div>
+</body>
+</html>
